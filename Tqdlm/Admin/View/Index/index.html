@@ -167,14 +167,6 @@
 	<!-- EASY PIE CHART -->
 	<script src="__PUBLIC__/Admin/js/jquery-easing/jquery.easing.min.js"></script>
 	<script type="text/javascript" src="__PUBLIC__/Admin/js/easypiechart/jquery.easypiechart.min.js"></script>
-	<!-- FLOT CHARTS -->
-	<script src="__PUBLIC__/Admin/js/flot/jquery.flot.min.js"></script>
-	<script src="__PUBLIC__/Admin/js/flot/jquery.flot.time.min.js"></script>
-    <script src="__PUBLIC__/Admin/js/flot/jquery.flot.selection.min.js"></script>
-	<script src="__PUBLIC__/Admin/js/flot/jquery.flot.resize.min.js"></script>
-    <script src="__PUBLIC__/Admin/js/flot/jquery.flot.pie.min.js"></script>
-    <script src="__PUBLIC__/Admin/js/flot/jquery.flot.stack.min.js"></script>
-    <script src="__PUBLIC__/Admin/js/flot/jquery.flot.crosshair.min.js"></script>
 	<!-- TODO -->
 	<script type="text/javascript" src="__PUBLIC__/Admin/js/jquery-todo/js/paddystodolist.js"></script>
 	<!-- TIMEAGO -->
@@ -195,6 +187,7 @@
 		$(function(){
 			$('#sidebar').find('.sidemenu').find('a').click(function() {
 				var src = $(this).attr('src');
+				console.log(src);
 				$('#iframe').attr('src', src);
 			});
 		})
