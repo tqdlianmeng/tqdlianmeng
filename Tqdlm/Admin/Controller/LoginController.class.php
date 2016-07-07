@@ -22,7 +22,7 @@ class LoginController extends Controller {
         $data = $Dao->where($arr)->field("id,username")->select();
         
         $_SESSION['username'] = $data[username]; 
-        $_SESSION['pwd'] = $data[pwd];
+        $_SESSION['id'] = $data[id];
 
         if($data>0){     
             $this->success("登陆成功",'Admin/Login/logn');    
