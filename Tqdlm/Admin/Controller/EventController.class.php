@@ -1,9 +1,65 @@
 <?php
 namespace Admin\Controller;
 use Think\Controller;
+
 class EventController extends Controller {
     public function index() {
-        $this->display();
+		if (IS_AJAX) {
+			$m_event = M('event');
+			$requestData= $_REQUEST;
+			$columns = array( 
+				0 => 'title', 
+				1 => 'type',
+				2 => 'view',
+				3 => 'is_online',
+				4 => 'mod_ts'
+			);
+
+			// 获取所有记录数
+			$sql = "SELECT title, type, view, is_online, mod_ts, id ";
+			$sql.=" FROM event";
+			$total = count($m_event->query($sql));
+			$totalFiltered = $total;
+
+			// 获取搜索
+			$sql = "SELECT title, type, view, is_online, mod_ts, id ";
+			$sql.=" FROM event";
+			if( !empty($requestData['search']['value']) ) {  
+				$sql.=" WHERE title LIKE '%".$requestData['search']['value']."%' ";    
+			}
+			$totalFiltered = count($m_event->query($sql));
+			$sql.=" ORDER BY ". $columns[$requestData['order'][0]['column']]." ".$requestData['order'][0]['dir']."  LIMIT ".$requestData['start']." ,".$requestData['length']."   ";
+			$res = $m_event->query($sql);
+
+			$types = array('国际赛事', '国内赛事');
+			$online = array('否', '是');
+			$data = array();
+			foreach( $res as $k => $v ) {
+				$tmp=array();
+				$id = $v['id'];
+				$tmp[] = $v["title"];
+				$tmp[] = $types[$v["type"]];
+				$tmp[] = $v["view"];
+				$tmp[] = $online[$v["is_online"]];
+				$tmp[] = $v["mod_ts"];
+				$tmp[] = "<a class='btn btn-success tip-left view' style='margin-right:15px;' href='javascript:;' data-id='{$id}' title='查看'>查看</a>".
+						 "<a class='btn btn-info tip-left edit' href='javascript:;' style='margin-right:15px;' data-id='{$id}' title='编辑'>编辑</a>".
+						 "<a class='btn btn-danger tip-left del' href='javascript:;' data-id='{$id}' title='删除'>删除</a>";
+				$data[] = $tmp;
+			}
+
+			$json_data = array(
+				"draw"            => intval( $requestData['draw'] ), 
+				"recordsTotal"    => intval( $total ),
+				"recordsFiltered" => intval( $totalFiltered ), 
+				"data"            => $data
+			);
+
+			echo json_encode($json_data);
+			
+		} else {
+	        $this->display();
+		}       
     }
 
     /**
@@ -43,5 +99,21 @@ class EventController extends Controller {
     	} else {
     		$this->display();
     	}
+    }
+
+    /**
+     * 删除赛事资讯
+     */
+    function delete() {
+    	$id = $_POST['id'];
+    	$m_event = M('event');
+
+    	$res = $m_event->where('id='.intval($id))->delete();
+    	if ($res) {
+    		$result = array('is_ok' => true);
+    	} else {
+    		$result = array('is_ok' => false);
+    	}
+    	echo json_encode($result);exit;
     }
 }
