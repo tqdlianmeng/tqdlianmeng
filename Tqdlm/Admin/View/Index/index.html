@@ -93,11 +93,23 @@
 						
 						<!-- SIDEBAR MENU -->
 						<ul class='sidmenu'>
-							<li class="active">
-								<a href="index.html">
-								<i class="fa fa-tachometer fa-fw"></i> <span class="menu-text">新闻资讯</span>
-								<span class="selected"></span>
-								</a>					
+							<li class="has-sub">
+								<a href="javascript:;" class="" target="f">
+									<i class="fa fa-tachometer fa-fw"></i> <span class="menu-text">新闻资讯</span>
+									<span class="arrow"></span>
+								</a>
+								<ul class="sub">
+									<li>
+										<a class="" href="{:U('Admin/News/index')}" target="_self">
+											<span class="sub-menu-text">新闻资讯列表</span>
+										</a>
+									</li>
+									<li>
+										<a class="" href="{:U('Admin/News/add')}" target="_self">
+											<span class="sub-menu-text">添加新闻资讯</span>
+										</a>
+									</li>
+								</ul>
 							</li>
 							<li class="has-sub">
 								<a href="javascript:;" class="" target="f">
