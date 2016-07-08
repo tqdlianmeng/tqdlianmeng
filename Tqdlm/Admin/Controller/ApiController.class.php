@@ -133,9 +133,9 @@ class ApiController extends ApiComController {
 	}
 
 	/**
-	 * 获取赛事资讯
+	 * 获取赛事资讯列表
 	 */
-	public function getEvent() {
+	public function getEventList() {
 		$type = $_REQUEST['type'];
 		$types = array('0', '1');
 		$p = empty($_REQUEST['p']) ? 1 : intval($_REQUEST['p']);
@@ -162,14 +162,17 @@ class ApiController extends ApiComController {
 			$v['crt_ts'] = date('Y-m-d H:i:s', $v['crt_ts']);
 		}
 
-		$result = array('item' => $info);
+		$result = array('item' => $info, 'current' => $p, 'total' => $total);
 		$this->setSucceeded(true);
 		$this->setResult($result);
 		$this->output();
 	}
 
-
+	/**
+	 * 获取活动列表
+	 */
 	public function getActivity() {
+		$p = empty($_REQUEST['p']) ? 1 : intval($_REQUEST);
 		$type = $_REQUEST['type'];
 		$types = array('0', '1', '2', '3', '4', '5');
 		if (!in_array($type, $types)) {
@@ -180,10 +183,22 @@ class ApiController extends ApiComController {
 
 		$m_activity = M('activity');
 		$where = array('is_online' => '1', 'type' => $type);
-		$page_size = 4;
-		$count = $m_event->where($where)->count();
+		$page_size = 9;
+		$count = $m_activity->where($where)->count();
 		$total = intval(ceil($count/$page_size));
 		$start = $page_size * ($p - 1);
 		$end = $start + $page_size;
+
+		$limit = $start.' , '.$page_size;
+		$field = 'id, title, cover, crt_ts, view';
+		$info = $m_activity->where($where)->limit($limit)->field($field)->order('crt_ts DESC')->select();
+		foreach ($info as $k => &$v) {
+			$v['crt_ts'] = date('Y-m-d H:i:s', $v['crt_ts']);
+		}
+
+		$result = array('item' => $info, 'current' => $p, 'total' => $total);
+		$this->setSucceeded(true);
+		$this->setResult($result);
+		$this->output();
 	}
 }
