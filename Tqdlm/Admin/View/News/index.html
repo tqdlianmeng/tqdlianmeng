@@ -69,6 +69,7 @@
                                             <th>类型</th>
                                             <th class="hidden-xs">浏览人数</th>
                                             <th>是否显示</th>
+                                            <th>是否置顶</th>
                                             <th class="hidden-xs">修改时间</th>
                                             <th class="hidden-xs">操作</th>
                                         </tr>
@@ -108,10 +109,10 @@
                 },
                 "columnDefs": [{
                     orderable:false,          //禁用排序
-                    targets:[0,1,2,3,5]   //指定的列
+                    targets:[6]   //指定的列
                 }],
                 "autoWidth": false,
-                "order": [[ 4, "desc" ]],
+                "order": [[ 5, "desc" ]],
                 "lengthMenu": [[10, 20, 30, 50], [10, 20, 30, 50]],
                 "language": {
                     "decimal":        "",
