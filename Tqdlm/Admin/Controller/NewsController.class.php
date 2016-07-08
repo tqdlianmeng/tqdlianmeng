@@ -4,7 +4,7 @@ namespace Admin\Controller;
 use Think\Controller;
 use Common\Util\ParamCheck;
 
-class NewsController extends Controller
+class NewsController extends CommonController
 {
     /**
      * 获取列表

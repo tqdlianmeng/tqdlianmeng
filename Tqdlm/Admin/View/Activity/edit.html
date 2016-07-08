@@ -96,7 +96,7 @@
 					                                <div class="col-md-4">
 					                                    <img src="" alt="" id="cover_box" style="display:none">
 					                                    <a id="upload">
-					                                    	<img src="__ROOT__ /{$activity['cover']}" width="250px" alt="" id="cover_prev">
+					                                    	<img src="{$activity['cover']}" width="250px" alt="" id="cover_prev">
 					                                    </a>
 					                                </div>
 
@@ -110,10 +110,10 @@
 													<label class="control-label col-md-1 col-sm-1">附件：</label>
 													<div class="col-md-2 col-sm-2">
 														<button type="button" class="btn btn-primary" id="attach_file">选择文件</button>
-				                                        <input type="file" id="attach" name="attach" class="hidden" value=" __ROOT__ /{$activity['attach']}">
+				                                        <input type="file" id="attach" name="attach" class="hidden" value="{$activity['attach']}">
 													</div>
 													<div class="col-md-7 col-sm-7">
-														<h5 id="attach_name">{$activity['cover']}</h5>
+														<h5 id="attach_name">{$activity['attach']}</h5>
 													</div>
 												</div>
 												
@@ -137,7 +137,7 @@
 												<div class="form-group" style="margin-top:20px;">
 													<div class="col-md-9 col-sm-9 text-right" style="border:none;">
 														<button type="reset" class="btn btn-primary m-r-15">重置</button>
-														<button type="submit" class="btn btn-primary m-r-15">添加</button>
+														<button type="submit" class="btn btn-primary m-r-15">修改</button>
 													</div>
 												</div>
 

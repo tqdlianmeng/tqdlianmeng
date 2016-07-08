@@ -2,7 +2,7 @@
 namespace Admin\Controller;
 use Think\Controller;
 
-class EventController extends Controller {
+class EventController extends CommonController {
     public function index() {
 		if (IS_AJAX) {
 			$m_event = M('event');
@@ -76,7 +76,7 @@ class EventController extends Controller {
     		);
     		foreach ($dat as $k => $v) {
     			if(empty($v)) {
-    				$this->error('必填选项不能为空')；
+    				$this->error('必填选项不能为空');
     			}
     		}
     		$upload = new \Think\Upload();// 实例化上传类
@@ -141,7 +141,7 @@ class EventController extends Controller {
     		);
     		foreach ($dat as $k => $v) {
     			if(empty($v)) {
-    				$this->error('必填选项不能为空')；
+    				$this->error('必填选项不能为空');
     			}
     		}
 

@@ -89,7 +89,7 @@
 					                                    <img src="" alt="" id="cover_box" style="display:none">
 					                                    <a id="upload">
 					                                    <?php 
-					                                    	$src = empty($data['cover']) ? '__PUBLIC__/Admin/img/default-thumbnail.png' : '__ROOT__/'.$data['cover'];
+					                                    	$src = empty($data['cover']) ? '__PUBLIC__/Admin/img/default-thumbnail.png' : $data['cover'];
 					                                    ?>
 					                                    	<img src="<?php echo $src; ?>" width="250px" alt="" id="cover_prev">
 					                                    </a>

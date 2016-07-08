@@ -23,9 +23,10 @@ class LoginController extends Controller {
 
             $data = $Dao->where($arr)->field("id,username")->select();
             if ($data>0) {
-                $_SESSION['username'] = $data['username']; 
-                $_SESSION['id'] = $data['id'];    
-                $this->success("登录成功", 'Admin/News/index');    
+                
+                $_SESSION['username'] = $arr['username']; 
+                $_SESSION['id'] = $arr['id'];    
+                $this->success("登录成功", U('Admin/News/index'));    
             } else {
                 $this->error('账号或密码错误');   
             }
@@ -34,4 +35,11 @@ class LoginController extends Controller {
         }
     }
 
+    public function logout(){
+
+        session_unset();
+        session_destroy();
+        $this->success("退出成功", U('Admin/Login/index'));
+        
+    }
 }
