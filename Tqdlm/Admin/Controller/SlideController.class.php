@@ -33,8 +33,8 @@ class SlideController extends CommonController{
             $sql.=" ORDER BY ". $columns[$requestData['order'][0]['column']]." ".$requestData['order'][0]['dir']."  LIMIT ".$requestData['start']." ,".$requestData['length']."   ";
             $res = $m_act->query($sql);
 
-            $types = array('国际赛事轮播图', '国内赛事轮播图');
-            $online = array('否', '是');
+            $types = array('1' => '国际赛事轮播图', '2' => '国内赛事轮播图');
+            $online = array('1' => '是', '2' =>'否');
             $data = array();
             foreach( $res as $k => $v ) {
                 $tmp=array();
@@ -109,9 +109,9 @@ class SlideController extends CommonController{
         	$res = $Slide -> add($data);
 
         	if($res){
-        		$this -> success("数据插入成功");
+        		$this -> success("添加成功");
         	}else{
-        		$this -> error("数据插入失败");
+        		$this -> error("添加失败");
         	}
 
         } else {
@@ -170,10 +170,7 @@ class SlideController extends CommonController{
                 if(!empty($info['img'])) {
                     $data_url['img'] = $url.'/Public/Uploads/'.$info['img']['savepath'].$info['img']['savename'];
                 }
-
                 
-
-            
                 $data = array(
                     'title'     => $_POST['title'],                    
                     'type'      => $_POST['type'],                    
@@ -196,12 +193,11 @@ class SlideController extends CommonController{
             }
 
             $res = $list->where('id='.(int)$_POST['act_id'])->save($data);
-           
 
             if($res){
-                $this -> success("活动修改成功");
+                $this -> success("修改成功");
             }else{
-                $this -> error("活动修改失败");
+                $this -> error("修改失败");
             }
         }
     }
