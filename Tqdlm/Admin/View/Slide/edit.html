@@ -65,14 +65,14 @@
                                             <div class="panel-body panel-form">
                                                 <div class="col-md-12">
                                                     <div class="form-group">
-                                                        <label class="control-label col-md-1 col-sm-1" for="fullname">标题：</label>
+                                                        <label class="control-label col-md-2 col-sm-2" for="fullname">标题：</label>
                                                         <div class="col-md-8 col-sm-8">
                                                             <input class="form-control" type="text"  name="title" id="name" placeholder='新闻资讯标题' value="{$info.title}">
                                                         </div>
                                                     </div>
                                                     <input type="hidden" name="id" value="{$info.id}">
                                                     <div class="form-group">
-                                                        <label class="control-label col-md-1 col-sm-1">类型：</label>
+                                                        <label class="control-label col-md-2 col-sm-2">类型：</label>
                                                         <div class="col-md-3 col-sm-3">
                                                             <select class="form-control" name="type" id="type">
                                                                 <option value="0">国际新闻</option>
@@ -84,7 +84,7 @@
                                                     </div>
 
                                                     <div class="form-group">
-                                                        <label class="col-md-1 control-label">封面：</label>
+                                                        <label class="col-md-2 control-label">封面：</label>
                                                         
                                                         <div class="col-md-4">
                                                             <img src="" alt="" id="cover_box" style="display:none">
@@ -103,7 +103,7 @@
                                                     </div>
                                                     
                                                     <div class="form-group">
-                                                        <label class="col-md-1 control-label">置顶：</label>
+                                                        <label class="col-md-2 control-label">置顶：</label>
                                                         <div class="col-md-8">
                                                             <label class="radio-inline"><input type="radio" name="is_top" value="1" <if condition="($info.is_top eq 1)">checked</if> > 是 </label>
                                                             <label class="radio-inline"><input type="radio" name="is_top" <if condition="($info.is_top eq 0)">checked</if>  value="0"> 否 </label>
@@ -111,7 +111,7 @@
                                                     </div>
 
                                                     <div class="form-group">
-                                                        <label class="col-md-1 control-label">发布：</label> 
+                                                        <label class="col-md-2 control-label">发布：</label> 
                                                         <div class="col-md-8"> 
                                                             <label class="radio-inline"> <input type="radio" class="uniform" name="is_online" value="1" <if condition="($info.is_online eq 1)">checked</if> > 是 </label> 
                                                             <label class="radio-inline"> <input type="radio" class="uniform" <if condition="($info.is_online eq 0)">checked</if>  name="is_online" value="0"> 否 </label>
@@ -119,7 +119,7 @@
                                                      </div>
 
                                                     <div class="form-group" >
-                                                        <label class="control-label col-md-1 col-sm-1">内容：</label>
+                                                        <label class="control-label col-md-2 col-sm-2">内容：</label>
                                                         <div class="col-md-11 col-sm-11">
                                                             <script type="text/plain" id="container" name="content"></script>
                                                         </div>
