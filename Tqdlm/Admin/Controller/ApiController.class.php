@@ -58,7 +58,7 @@ class ApiController extends ApiComController {
 
 		$info = M('news')->where($where)->field($field)->find();
 		if (!empty($info['content']) && !empty($info['id'])) {
-			$info['content'] = htmlspecialchars($v['content']);
+			$info['content'] = htmlspecialchars($info['content']);
 			M('news')->where('id='.$id)->setInc('view');
 			$result = array('detail' => $info);
 			$this->setSucceeded(true);
@@ -133,7 +133,7 @@ class ApiController extends ApiComController {
 	}
 
 	/**
-	 * 获取赛事资讯
+	 * 获取赛事资讯列表
 	 */
 	public function getEvent() {
 		$type = $_REQUEST['type'];
@@ -166,6 +166,37 @@ class ApiController extends ApiComController {
 		$this->setSucceeded(true);
 		$this->setResult($result);
 		$this->output();
+	}
+
+	/**
+	 * 获取赛事资讯详情
+	 */
+	public function eventDetail() {
+
+		$id = $_REQUEST['id'];
+		if(empty($id)){
+			$this->setErrCode(1);
+			$this->setErrMsg('type参数错误');
+			$this->output();
+		}
+
+		$m_event = M('event');
+		$res = $m_event -> where(array('id'=>$id, 'is_online'=>'1')) -> field("mod_ts,is_online", true) -> find();
+
+		if(!empty($res['id']) && $res['content'] != ''){
+			$res['content'] = htmlspecialchars($res['content']);
+			$res['crt_ts']  = date('Y-m-d H:i:s', $res['crt_ts']);
+			$m_event -> where('id='.$id) -> setInc('view');
+			$result = array('detail' => $res);
+			$this->setSucceeded(true);
+			$this->setResult($result);
+			$this->output();
+		}else{
+			$this->setErrCode(2);
+			$this->setErrMsg('内容不存在');
+			$this->output();
+		}
+
 	}
 
 
