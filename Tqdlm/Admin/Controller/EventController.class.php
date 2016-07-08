@@ -69,9 +69,9 @@ class EventController extends CommonController {
     	if (IS_POST) {
     		$data = array(
 				'title'     => $_POST['title'],
+                'author'    => $_POST['author'],
 				'type'      => $_POST['type'],
 				'content'   => $_POST['content'],
-				'is_online' => $_POST['is_online'],
 				'crt_ts'    => time(),
     		);
     		foreach ($dat as $k => $v) {
@@ -79,6 +79,8 @@ class EventController extends CommonController {
     				$this->error('必填选项不能为空');
     			}
     		}
+            $data['is_online'] = $_POST['is_online'];
+
     		$upload = new \Think\Upload();// 实例化上传类
 			$upload->maxSize  = 3145728 ;// 设置附件上传大小
 			$upload->exts     = array('jpg', 'png', 'jpeg', 'zip', 'rar');// 设置附件上传类型
@@ -135,9 +137,9 @@ class EventController extends CommonController {
     		}
 		   	$data = array(
 				'title'     => $_POST['title'],
+                'author'    => $_POST['author'],
 				'type'      => $_POST['type'],
-				'content'   => $_POST['content'],
-				'is_online' => $_POST['is_online'],
+				'content'   => $_POST['content']
     		);
     		foreach ($dat as $k => $v) {
     			if(empty($v)) {
@@ -145,6 +147,7 @@ class EventController extends CommonController {
     			}
     		}
 
+            $data['is_online'] = $_POST['is_online'];
     		$upload = new \Think\Upload();// 实例化上传类
 			$upload->maxSize  = 3145728 ;// 设置附件上传大小
 			$upload->exts     = array('jpg', 'png', 'jpeg', 'zip', 'rar');// 设置附件上传类型

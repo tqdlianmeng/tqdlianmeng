@@ -13,7 +13,7 @@ class NewsController extends CommonController
     {
        if(IS_AJAX){
             $m_news = M('news');
-            $requestData= $_REQUEST;
+            $requestData = $_REQUEST;
             $columns = array( 
                 0 => 'title', 
                 1 => 'type',
@@ -167,6 +167,7 @@ class NewsController extends CommonController
         }
         $data = array(
             'title'     => $_POST['title'],
+            'author'    => $_POST['author'],
             'type'      => $_POST['type'],
             'cover'     => $cover,
             'content'   => $_POST['content'],

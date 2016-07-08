@@ -61,7 +61,7 @@
 										<h4><i class="fa fa-table"></i>活动资讯列表</h4>
 									</div>
 									<div class="box-body">
-										<table id="event_table" cellpadding="0" cellspacing="0" border="0" class="datatable table table-striped table-bordered table-hover">
+										<table id="activity_table" cellpadding="0" cellspacing="0" border="0" class="datatable table table-striped table-bordered table-hover">
 											<thead>
 												<tr>
 													<th>标题</th>
@@ -102,7 +102,7 @@
 	<script type="text/javascript">
 		$(function(){
 
-			var oTable1 = $('#event_table').dataTable( {
+			var oTable1 = $('#activity_table').dataTable( {
 				"processing": true,
         		"serverSide": true,
         		"ajax": {
@@ -149,23 +149,23 @@
 				var length_sel = datatable.closest('.dataTables_wrapper').find('div[id$=_length] select');
 				length_sel.addClass(' input-sm');
 			});
-			$('#event_table_paginate').find('li.prev').hide();
-			$('#event_table_paginate').find('li.next').hide();
+			$('#activity_table_paginate').find('li.prev').hide();
+			$('#activity_table_paginate').find('li.next').hide();
 
 			// 点击查看
-			$('#event_table').on('click', '.view', function(){
+			$('#activity_table').on('click', '.view', function(){
 				var id = $(this).attr('data-id');
 				window.location.href = "__MODULE__/Activity/view/id/"+id;
 			});
 
 			// 点击编辑
-			$('#event_table').on('click', '.edit', function(){
+			$('#activity_table').on('click', '.edit', function(){
 				var id = $(this).attr('data-id');
 				window.location.href = "__MODULE__/Activity/edit/id/"+id;
 			});
 
 			// 点击删除
-			$('#event_table').on('click', '.del', function(){
+			$('#activity_table').on('click', '.del', function(){
 				if(!confirm('确定删除？')) return false;
 				
 				var id = $(this).attr('data-id');

@@ -1,30 +1,31 @@
 <?php
 namespace Admin\Controller;
 use Think\Controller;
-class ActivityController extends CommonController {
-    
-    public function index() {
+//轮播图控制器
+class SlideController extends CommonController{
 
-        if (IS_AJAX) {
-            $m_act = M('Activity');
+	public function index(){
+		
+		if (IS_AJAX) {
+            $m_act = M('slide');
             $requestData= $_REQUEST;
             $columns = array( 
                 0 => 'title', 
                 1 => 'type',
-                2 => 'view',
+                2 => 'img',
                 3 => 'is_online',
                 4 => 'mod_ts'
             );
 
             // 获取所有记录数
-            $sql = "SELECT title, type, view, is_online, mod_ts, id ";
-            $sql.=" FROM Activity";
+            $sql = "SELECT title, type, img, is_online, mod_ts, id ";
+            $sql.=" FROM slide";
             $total = count($m_act->query($sql));
             $totalFiltered = $total;
 
             // 获取搜索
-            $sql = "SELECT title, type, view, is_online, mod_ts, id ";
-            $sql.=" FROM Activity";
+            $sql = "SELECT title, type, img, is_online, mod_ts, id ";
+            $sql.=" FROM slide";
             if( !empty($requestData['search']['value']) ) {  
                 $sql.=" WHERE title LIKE '%".$requestData['search']['value']."%' ";    
             }
@@ -32,7 +33,7 @@ class ActivityController extends CommonController {
             $sql.=" ORDER BY ". $columns[$requestData['order'][0]['column']]." ".$requestData['order'][0]['dir']."  LIMIT ".$requestData['start']." ,".$requestData['length']."   ";
             $res = $m_act->query($sql);
 
-            $types = array('国际活动', '中国联盟活动', '分区协会活动', '省级协会活动', '国际、国内会议', '国际、国内讲习');
+            $types = array('国际赛事轮播图', '国内赛事轮播图');
             $online = array('否', '是');
             $data = array();
             foreach( $res as $k => $v ) {
@@ -40,7 +41,7 @@ class ActivityController extends CommonController {
                 $id = $v['id'];
                 $tmp[] = $v["title"];
                 $tmp[] = $types[$v["type"]];
-                $tmp[] = $v["view"];
+                $tmp[] = "<img style='width:100px;' src='".$v['img']."'>";
                 $tmp[] = $online[$v["is_online"]];
                 $tmp[] = $v["mod_ts"];
                 $tmp[] = "<a class='btn btn-success tip-left view' style='margin-right:15px;' href='javascript:;' data-id='{$id}' title='查看'>查看</a>".
@@ -61,58 +62,38 @@ class ActivityController extends CommonController {
         } else {
             $this->display();
         }       
-    }
 
-    //点击查看
-    public function view() {
-        $id = I('get.id');
-        if (empty($id)) {
-            $this->redirect('Activity/index');
-        }
-        $m_event = M('activity');
-        $data = $m_event->where('id='.$id)->select();
+		
+	}
 
-        $this->assign('data', $data[0]);
-        $this->display();
-    }
+	public function add(){
 
-
-    //活动资讯添加
-    public function add(){
-        // echo "<pre>";
-        // var_dump($_POST);
-        // var_dump($_FILES);
-        // echo  "</pre>";
-    	$Act = M('activity');
-
-        if (IS_POST) {
-            $test = $Act -> where(array('title'=>$_POST['title'])) -> select();
+		$Slide = M('slide');
+		if (IS_POST) {
+            $test = $Slide -> where(array('title'=>$_POST['title'])) -> select();
 
             if($test){
-                $this -> error("介个活动都添加完了，不信你瞅瞅");
+                $this -> error("换个名字好吗？已经重复了");
             }
 
             $data = array(
                 'title'     => $_POST['title'],
-                'author'    => $_POST['author'],
                 'type'      => $_POST['type'],
-                'content'   => $_POST['content'],                
-                'crt_ts'    => time()        
-            );
+                'is_online' => $_POST['is_online'],
+                'crt_ts'    => time()
+            );		
+            
             foreach($data as $key => $val){
-                if($val != '0' || $val){
+                if(empty($val)){
                     $this -> error("必填选项不能为空");
                 }
             }
 
-            $data['is_online'] = $_POST['is_online'];
-
             $upload = new \Think\Upload();// 实例化上传类
             $upload->maxSize  = 3145728 ;// 设置附件上传大小
-            $upload->exts     = array('jpg', 'png', 'jpeg', 'zip', 'rar');// 设置附件上传类型
+            $upload->exts     = array('jpg', 'png', 'jpeg');// 设置附件上传类型
             $upload->rootPath = './Public/Uploads/'; // 设置附件上传根目录
-            $upload->savePath = 'activity/'; // 设置附件上传（子）目录
-
+            $upload->savePath = 'slide/'; // 设置附件上传（子）目录
 
             // 上传文件 
             $info = $upload->upload();
@@ -120,21 +101,17 @@ class ActivityController extends CommonController {
                 $this->error($upload->getError());
             } else {// 上传成功
                 $url = 'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['SCRIPT_NAME']);
-                if(!empty($info['cover']['savename'])) {
-                    $data['cover'] = $url.'/Public/Uploads/'.$info['cover']['savepath'].$info['cover']['savename'];
-                }
-                if(!empty($info['attach']['savename'])) {
-                    $data['attach'] = $url.'/Public/Uploads/'.$info['attach']['savepath'].$info['attach']['savename'];
-                }
+                if(!empty($info['img']['savename'])) {
+                    $data['img'] = $url.'/Public/Uploads/'.$info['img']['savepath'].$info['img']['savename'];
+                }              
             }
 
-
-        	$res = $Act -> add($data);
+        	$res = $Slide -> add($data);
 
         	if($res){
-        		$this -> success("活动添加成功");
+        		$this -> success("数据插入成功");
         	}else{
-        		$this -> error("活动添加失败");
+        		$this -> error("数据插入失败");
         	}
 
         } else {
@@ -144,11 +121,11 @@ class ActivityController extends CommonController {
 
     public function del(){
 
-    	$Act = M('activity');
+    	$Sli = M('slide');
 
     	$id = $_POST['id'];
         
-        $res = $Act->where('id='.intval($id))->delete();
+        $res = $Sli->where('id='.intval($id))->delete();
         if ($res) {
             $result = array('is_ok' => true);
         } else {
@@ -157,37 +134,32 @@ class ActivityController extends CommonController {
         echo json_encode($result);exit;
     }
 
-
     public function edit(){
-        $M = M("activity");
-        $activity = $M->where("id=" . (int)$_GET['id'])->find();
+        $M = M("slide");
+        $slide = $M->where("id=" . (int)$_GET['id'])->find();
         // var_dump($activity);die();
         
-        if ($activity['id'] == '') {
-            $this->error("该活动不存在");
+        if ($slide['id'] == '') {
+            $this->error("该图片不存在");
         }
 
-        $this->assign("activity", $activity);
+        $this->assign("slide", $slide);
         
         $this->display();
     }
 
-
     public function update(){
-        // echo "<pre>";
-        // var_dump($_POST);
-        // var_dump($_FILES);
-        // echo  "</pre>";die;
+
         if (IS_POST) {
-            $list = M("activity");
+            $list = M("slide");
             
-            if(!empty($_FILES['attach']['name']) || !empty($_FILES['cover']['name'])){
+            if(!empty($_POST['img'])){
             
                 $upload = new \Think\Upload();// 实例化上传类
                 $upload->maxSize  = 3145728 ;// 设置附件上传大小
-                $upload->exts     = array('jpg', 'png', 'jpeg', 'zip', 'rar');// 设置附件上传类型
+                $upload->exts     = array('jpg', 'png', 'jpeg');// 设置附件上传类型
                 $upload->rootPath = './Public/Uploads/'; // 设置附件上传根目录
-                $upload->savePath = 'activity/'; // 设置附件上传（子）目录
+                $upload->savePath = 'slide/'; // 设置附件上传（子）目录
 
                 
             // 上传文件 
@@ -195,41 +167,35 @@ class ActivityController extends CommonController {
             
                 $url = 'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['SCRIPT_NAME']);
 
-                if(!empty($info['cover'])) {
-                    $data['cover'] = $url.'/Public/Uploads/'.$info['cover']['savepath'].$info['cover']['savename'];
+                if(!empty($info['img'])) {
+                    $data_url['img'] = $url.'/Public/Uploads/'.$info['img']['savepath'].$info['img']['savename'];
                 }
 
-                if (!empty($info['attach'])) {
-                    $data['attach'] = $url.'/Public/Uploads/'.$info['attach']['savepath'].$info['attach']['savename'];
-                }
+                
 
             
-                $date = array(
-                    'title'     => $_POST['title'],
-                    'author'    => $_POST['author'],
-                    'type'      => $_POST['type'],
-                    'content'   => $_POST['content'],
-                    'cover'     => $data['cover'],
-                    'attach'    => $data['attach']
+                $data = array(
+                    'title'     => $_POST['title'],                    
+                    'type'      => $_POST['type'],                    
+                    'is_online' => $_POST['is_online'],                                   
+                    'img'       => $data_url['img']
                 );
             } else {
 
-                $date = array(
-                    'title'     => $_POST['title'],
-                    'author'    => $_POST['author'],
-                    'type'      => $_POST['type'],
-                    'content'   => $_POST['content'],                    
+                $data = array(
+                    'title'     => $_POST['title'],                    
+                    'type'      => $_POST['type'],                    
+                    'is_online' => $_POST['is_online'],                                         
                 );           
             }
 
-            foreach($date as $key => $val){
+            foreach($data as $key => $val){
                 if(empty($val)){
                     $this -> error("必填选项不能为空");
                 }
             }
-            $data['is_online'] = $_POST['is_online'];
-            
-            $res = $list->where('id='.(int)$_POST['act_id'])->save($date);
+
+            $res = $list->where('id='.(int)$_POST['act_id'])->save($data);
            
 
             if($res){
@@ -239,6 +205,4 @@ class ActivityController extends CommonController {
             }
         }
     }
-
-
 }
