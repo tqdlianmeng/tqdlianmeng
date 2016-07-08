@@ -5,87 +5,160 @@
     <title>新闻查看</title>
 </block>
 <block name="content">
-    <div id="content">
-        <div class="col-sm-12">
-            <div class="page-header">
-                <!-- BREADCRUMBS -->
-                <ul class="breadcrumb">
-                    <li>
-                        <i class="fa fa-home"></i>
-                        <a href="index.html">新闻资讯</a>
-                    </li>
-                    <li>查看</li>
-                </ul>
-                <!-- /BREADCRUMBS -->
+ <!-- SAMPLE BOX CONFIGURATION MODAL FORM-->
+    <div class="modal fade" id="box-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title">Box Settings</h4>
             </div>
-
-            <div class="box-body big">
-                <form role="form" action="{:U('Admin/News/update')}" method="post" enctype="multipart/form-data">
-                    <div class="form-group col-md-6">
-                        <label class="col-sm-3 control-label">标题:</label>
-                        <div class="col-sm-9">
-                            <input class="form-control" type="text" name="title" value="{$info.title}" disabled>
-                        </div>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label class="col-sm-3 control-label">类型:</label>
-                        <div class="col-sm-9">
-                            <select class="form-control" name="type" disabled>
-                                <option value="0">国际新闻</option>
-                                <option value="1">国内新闻</option>
-                                <option value="2">中国联盟</option>
-                                <option value="3">联盟公告</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label class="col-sm-3 control-label">浏览人数:</label>
-                        <div class="col-sm-9">
-                            <input class="form-control" type="text" name="view" value="{$info.view}" disabled>
-                        </div>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label class="col-sm-3 control-label">置顶:</label>
-                        <div class="col-sm-9">
-                            <input type="radio" name="is_top" value="1" <if condition="($info.is_top eq 1)">checked</if> disabled>是
-                            <input type="radio" name="is_top" value="0" <if condition="($info.is_top eq 0)">checked</if> disabled>否
-                        </div>
-                    </div>
-                    <div class="form-group col-md-6"></div>
-                    <div class="form-group col-md-6">
-                        <label class="col-sm-3 control-label">上线:</label>
-                        <div class="col-sm-9">
-                            <input type="radio" name="is_online" value="1" <if condition="($info.is_online eq 1)">checked</if> disabled>是
-                            <input type="radio" name="is_online" value="0" <if condition="($info.is_online eq 0)">checked</if> disabled>否
-                        </div>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label class="col-sm-3 control-label">封面图:</label>
-                        <div class="col-sm-9">
-                            <img src="" alt="" id="cover_box" style="display:none">
-                            <a id="upload">
-                                <img src="{$info.cover}" width="70px" alt="" id="cover_prev">
-                            </a>
-                        </div>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label class="col-sm-3 control-label">内容:</label>
-                        <div class="col-sm-9">
-                                {$info.content}
-                        </div>
-                    </div>
-                    <div class="form-group col-md-12 col-md-offset-8">
-                        <input type="hidden" name="id" value="{$info.id}">
-                        <button type="submit" class="btn btn-success">提交</button>
-                    </div>
-                </form>
+            <div class="modal-body">
+              Here goes box setting content.
             </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
         </div>
     </div>
+    <!-- /SAMPLE BOX CONFIGURATION MODAL FORM-->
+    <div class="container">
+        <div class="row">
+            <block name = 'content'>
+            <div id="content" class="col-lg-12">
+                <!-- PAGE HEADER-->
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="page-header" style="min-height:45px;">
+                            <!-- STYLER -->
+                            
+                            <!-- /STYLER -->
+                            <!-- BREADCRUMBS -->
+                            <ul class="breadcrumb">
+                                <li>
+                                    <i class="fa fa-home"></i>
+                                    <a href="index.html">新闻资讯</a>
+                                </li>
+                                <li>查看新闻资讯</li>
+                            </ul>
+                            <!-- /BREADCRUMBS -->
+                        </div>
+                    </div>
+                </div>
+                <!-- /PAGE HEADER -->
+                <!-- DASHBOARD CONTENT -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="box border inverse">
+                                    <div class="box-title">
+                                        <h4><i class="fa fa-bars"></i>新闻资讯内容</h4>
+                                        <div class="tools">
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="box-body">
+                                        <form id="add" action="{:U('Admin/News/create')}" class="form-horizontal form-bordered"  method="post" enctype="multipart/form-data">
+                                            <div class="panel-body panel-form">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-1 col-sm-1" for="fullname">标题：</label>
+                                                        <div class="col-md-8 col-sm-8">
+                                                            <input class="form-control" type="text"  name="title" id="name" placeholder='新闻资讯标题' value="{$info.title}" disabled>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-1 col-sm-1">类型：</label>
+                                                        <div class="col-md-3 col-sm-3">
+                                                            <select class="form-control" name="type" id="type" disabled>
+                                                                <option value="0">国际新闻</option>
+                                                                <option value="1">国内新闻</option>
+                                                                <option value="2">中国联盟</option>
+                                                                <option value="3">联盟公告</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label class="col-md-1 control-label">封面：</label>
+                                                        
+                                                        <div class="col-md-4">
+                                                            <img src="" alt="" id="cover_box" style="display:none">
+                                                            <a id="upload">
+                                                               <?php 
+                                                                $src = empty($info['cover']) ? '__PUBLIC__/Admin/img/default-thumbnail.png' : $info['cover'];
+                                                                ?>
+                                                                <img src="<?php echo $src; ?>" width="250px" alt="" id="cover_prev">
+                                                            </a>
+                                                        </div>
+
+                                                    </div>
+                                                    
+                                                    <div class="form-group">
+                                                        <label class="col-md-1 control-label">置顶：</label>
+                                                        <div class="col-md-8">
+                                                            <label class="radio-inline"><input type="radio" name="is_top" value="1" <if condition="($info.is_top eq 1)">checked</if> disabled> 是 </label>
+                                                            <label class="radio-inline"><input type="radio" name="is_top" <if condition="($info.is_top eq 0)">checked</if> disabled value="0"> 否 </label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label class="col-md-1 control-label">发布：</label> 
+                                                        <div class="col-md-8"> 
+                                                            <label class="radio-inline"> <input type="radio" class="uniform" name="is_online" value="1" <if condition="($info.is_online eq 1)">checked</if> disabled> 是 </label> 
+                                                            <label class="radio-inline"> <input type="radio" class="uniform" <if condition="($info.is_online eq 0)">checked</if> disabled name="is_online" value="0"> 否 </label>
+                                                        </div>
+                                                     </div>
+
+                                                    <div class="form-group" >
+                                                        <label class="control-label col-md-1 col-sm-1">内容：</label>
+                                                        <div class="col-md-11 col-sm-11">
+                                                            <script type="text/plain" id="container" name="content"></script>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               <!-- /DASHBOARD CONTENT -->
+              
+                <!-- /CALENDAR & CHAT -->
+                <div class="footer-tools">
+                    <span class="go-top">
+                        <i class="fa fa-chevron-up"></i> Top
+                    </span>
+                </div>
+                
+            </div><!-- /CONTENT-->
+        </div>
+    </div>
+    
 </block>
 <block name="js">
+    <script type="text/javascript" src="__PUBLIC__/Admin/js/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/Admin/js/ueditor/ueditor.all.js"></script>
+
     <script>
-        //选中
-        $('select').val("{$info.type}").change();
+       $(function(){
+            //编辑器
+            var ue = UE.getEditor('container',{
+                initialFrameHeight: 600,
+            });
+            ue.addListener('ready', function(){
+                ue.setContent('{$info.content}');
+                ue.setDisabled([]);
+            })
+        })
     </script>
 </block>
