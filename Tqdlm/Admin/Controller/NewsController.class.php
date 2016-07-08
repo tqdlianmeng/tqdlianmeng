@@ -9,12 +9,64 @@ class NewsController extends Controller
     /**
      * 获取列表
      */
-    public function getList()
+    public function index()
     {
        if(IS_AJAX){
-           echo 333;die;
+            $m_news = M('news');
+            $requestData= $_REQUEST;
+            $columns = array( 
+                0 => 'title', 
+                1 => 'type',
+                2 => 'view',
+                3 => 'is_online',
+                4 => 'is_top',
+                5 => 'mod_ts'
+            );
+
+            // 获取所有记录数
+            $sql = "SELECT title, type, view, is_online, is_top, mod_ts, id ";
+            $sql.=" FROM news";
+            $total = count($m_news->query($sql));
+            $totalFiltered = $total;
+
+            // 获取搜索
+            $sql = "SELECT title, type, view, is_online, is_top, mod_ts, id ";
+            $sql.=" FROM news";
+            if( !empty($requestData['search']['value']) ) {  
+                $sql.=" WHERE title LIKE '%".$requestData['search']['value']."%' ";    
+            }
+            $totalFiltered = count($m_news->query($sql));
+            $sql.=" ORDER BY ". $columns[$requestData['order'][0]['column']]." ".$requestData['order'][0]['dir']."  LIMIT ".$requestData['start']." ,".$requestData['length']."   ";
+            $res = $m_news->query($sql);
+
+            $types = array('国际新闻', '国内新闻', '中国联盟', '联盟公告');
+            $online = array('否', '是');
+            $data = array();
+            foreach( $res as $k => $v ) {
+                $tmp=array();
+                $id = $v['id'];
+                $tmp[] = $v["title"];
+                $tmp[] = $types[$v["type"]];
+                $tmp[] = $v["view"];
+                $tmp[] = $online[$v["is_online"]];
+                $tmp[] = $online[$v["is_top"]];
+                $tmp[] = $v["mod_ts"];
+                $tmp[] = "<a class='btn btn-success tip-left view' style='margin-right:15px;' href='javascript:;' data-id='{$id}' title='查看'>查看</a>".
+                         "<a class='btn btn-info tip-left edit' href='javascript:;' style='margin-right:15px;' data-id='{$id}' title='编辑'>编辑</a>".
+                         "<a class='btn btn-danger tip-left del' href='javascript:;' data-id='{$id}' title='删除'>删除</a>";
+                $data[] = $tmp;
+            }
+
+            $json_data = array(
+                "draw"            => intval( $requestData['draw'] ), 
+                "recordsTotal"    => intval( $total ),
+                "recordsFiltered" => intval( $totalFiltered ), 
+                "data"            => $data
+            );
+
+            echo json_encode($json_data);exit;
        }
-        $this->display('News/list');
+        $this->display();
     }
 
     /**
@@ -33,9 +85,9 @@ class NewsController extends Controller
         $data = $this->_checkParam();
         $id = M('news')->add($data);
         if($id){
-            $this->success("添加成功","/Admin/News/list");
+            $this->success("添加成功");
         }else{
-            $this->success("添加失败!","/Admin/News/add");
+            $this->success("添加失败");
         }
     }
 
@@ -59,10 +111,11 @@ class NewsController extends Controller
     {
         $id = $_POST['id'];
         $data = $this->_checkParam();
-
+        if (empty($data['cover'])) unset($data['cover']);
+        
         $row = M('News')->where('id='.$id)->save($data);
         if($row){
-            $this->success("更新成功","/Admin/News/list");
+            $this->success("更新成功");
         }else{
             $this->success("更新失败!",$_SERVER['REQUEST_URI']);
         }
@@ -84,16 +137,17 @@ class NewsController extends Controller
     /**
      * 删除
      */
-    public function del()
+    public function delete()
     {
         $id = $_POST['id'];
 
         $row = M('News')->where('id='.$id)->delete();
-        if($row){
-            $this->success("删除成功","/Admin/News/list");
-        }else{
-            $this->success("删除失败!","/Admin/News/list");
+        if ($row) {
+            $result = array('is_ok' => true);
+        } else {
+            $result = array('is_ok' => false);
         }
+        echo json_encode($result);exit;
     }
 
     /**
@@ -108,19 +162,17 @@ class NewsController extends Controller
 //        ParamCheck::checkString('查看次数',$_POST['view'], 1);
 //        ParamCheck::checkInt('是否置顶',$_POST['is_top'], 1);
 //        ParamCheck::checkInt('是否上线',$_POST['is_online'], 1);
-        if($_FILES){
+        if($_FILES['cover']['tmp_name']){
             $cover = $this->_processPic();
         }
         $data = array(
-            'title'=>$_POST['title'],
-            'type'=>$_POST['type'],
-            'cover'=>$cover,
-            'content'=>$_POST['content'],
-            'view'=>$_POST['view'],
-            'is_top'=>$_POST['is_top'],
-            'is_online'=>$_POST['is_online'],
-            'crt_ts'=>NOW_TIME,
-            'mod_ts'=>NOW_TIME,
+            'title'     => $_POST['title'],
+            'type'      => $_POST['type'],
+            'cover'     => $cover,
+            'content'   => $_POST['content'],
+            'is_top'    => $_POST['is_top'],
+            'is_online' => $_POST['is_online'],
+            'crt_ts'    => time()
         );
 
         return $data;
@@ -142,7 +194,9 @@ class NewsController extends Controller
         if (!$info) {// 上传错误提示错误信息
             $this->error($upload->getError());
         } else {// 上传成功
-            $cover = '/Public/Uploads/'.$info['cover']['savepath'].$info['cover']['savename'];
+            $url = 'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['SCRIPT_NAME']);
+
+            $cover = $url.'/Public/Uploads/'.$info['cover']['savepath'].$info['cover']['savename'];
         }
 
         return $cover;
