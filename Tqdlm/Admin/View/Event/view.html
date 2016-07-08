@@ -90,29 +90,27 @@
 					                                    	<img src="<?php echo $src; ?>" width="250px" alt="" id="cover_prev">
 					                                    </a>
 					                                </div>
-
-					                                <div class="col-md-2" style="border-left:none;">
-					                                    <button type="button" class="btn btn-primary" id="cancel">取消封面</button>
-					                                    <input type="file" name="cover" id="cover" class="hidden" />
-					                                </div>
 					                            </div>
 												
 												<div class="form-group">
 													<label class="control-label col-md-1 col-sm-1">附件：</label>
 													<div class="col-md-2 col-sm-2">
-														<button type="button" class="btn btn-primary" id="attach_file">选择文件</button>
-				                                        <input type="file" id="attach" name="attach" class="hidden">
+														<?php 
+															if(empty($data['attach'])) {
+																echo '无';
+															} else {
+																echo basename($data['attach']);
+															}
+														?>
 													</div>
-													<div class="col-md-7 col-sm-7">
-														<h5 id="attach_name"></h5>
-													</div>
+													
 												</div>
 												
 												<div class="form-group">
 													<label class="col-md-1 control-label">发布：</label> 
 													<div class="col-md-8"> 
-														<label class="radio-inline"> <input type="radio" class="uniform" name="is_online" value="1"> 是 </label> 
-														<label class="radio-inline"> <input type="radio" class="uniform" checked name="is_online" value="0" checked=""> 否 </label>
+														<label class="radio-inline"> <input type="radio" class="uniform" <?php if ($data['is_online'] == 1) {echo 'checked';} ?>  name="is_online" value="1" disabled> 是 </label> 
+														<label class="radio-inline"> <input type="radio" class="uniform" <?php if ($data['is_online'] == 0) {echo 'checked';} ?>  name="is_online" value="0" disabled> 否 </label>
 													</div>
 												 </div>
 
@@ -120,13 +118,6 @@
 													<label class="control-label col-md-1 col-sm-1">内容：</label>
 													<div class="col-md-11 col-sm-11">
 														<script type="text/plain" id="container" name="content"></script>
-													</div>
-												</div>
-
-												<div class="form-group" style="margin-top:20px;">
-													<div class="col-md-9 col-sm-9 text-right" style="border:none;">
-														<button type="reset" class="btn btn-primary m-r-15">重置</button>
-														<button type="submit" class="btn btn-primary m-r-15">添加</button>
 													</div>
 												</div>
 
@@ -161,61 +152,14 @@
 
 	<script type="text/javascript">
 	$(function(){
-		var default_img = $('#upload').find('img').attr('src');
-
-		$('#upload').click(function() {
-	        $('input[name=cover]').click();
-	    });
-
-		$('#cancel').click(function() {
-			$('#upload').find('img').attr('src', default_img);
-	        $('input[name=cover]').val('');
-		});
-
-	    // 头像文件验证
-	    $('#cover').change(function() {
-	        var file = $(this)[0].files[0];
-	        //验证文件大小
-	        var size = file.size;
-	        var max_size = 1000000;
-	        if (size > max_size) {
-	            alert('文件过大，请重新选择！');
-	            $(this).val('');
-	            return false;
-	        }
-	        //验证文件类型
-	        var mime = file.type;
-	        var allow_type = ['image/jpeg', 'image/gif', 'image/png', 'image/bmp'];
-	        if (allow_type.indexOf(mime) == -1) {
-	            alert('文件类型有误，请选图片文件！');
-	            $(this).val('');
-	            return false;
-	        }
-
-	        var reader = new FileReader();
-	        reader.readAsDataURL(file);
-	        reader.onload = function(){
-	            $('#cover_box').attr('src', reader.result);
-	            $('#cover_box')[0].onload = function() {
-	                $('#cover_prev').attr('src', reader.result);
-	            }
-	        }
-	    });
-
-	    $('#attach_file').click(function() {
-	    	$(this).next('input').click();
-	    });
-
-	    $('#attach').change(function() {
-	        var file = $(this)[0].files[0];
-	        $('#attach_name').text(file.name);
-	    });
-
-
 	    //编辑器
 		var ue = UE.getEditor('container',{
             initialFrameHeight: 600,
 		});
+		ue.addListener('ready', function(){
+			ue.setContent('{$data.content}');
+			ue.setDisabled([]);
+		})
 	})
 
 	</script>
