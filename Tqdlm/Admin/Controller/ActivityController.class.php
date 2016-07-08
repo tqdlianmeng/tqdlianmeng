@@ -131,7 +131,7 @@ class ActivityController extends CommonController {
         	$res = $Act -> add($data);
 
         	if($res){
-        		$this -> success("活动添加成功");
+        		$this -> success("活动添加成功", U('Admin/Activity/index'));
         	}else{
         		$this -> error("活动添加失败");
         	}
@@ -230,7 +230,7 @@ class ActivityController extends CommonController {
            
 
             if($res){
-                $this -> success("活动修改成功");
+                $this -> success("活动修改成功", U('Admin/Activity/index'));
             }else{
                 $this -> error("活动修改失败");
             }

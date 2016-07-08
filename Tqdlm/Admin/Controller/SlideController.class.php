@@ -109,7 +109,7 @@ class SlideController extends CommonController{
         	$res = $Slide -> add($data);
 
         	if($res){
-        		$this -> success("添加成功");
+        		$this -> success("添加成功", U('Admin/Slide/index'));
         	}else{
         		$this -> error("添加失败");
         	}
@@ -195,7 +195,7 @@ class SlideController extends CommonController{
             $res = $list->where('id='.(int)$_POST['act_id'])->save($data);
 
             if($res){
-                $this -> success("修改成功");
+                $this -> success("修改成功", U('Admin/Slide/index'));
             }else{
                 $this -> error("修改失败");
             }

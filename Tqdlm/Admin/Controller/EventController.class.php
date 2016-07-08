@@ -101,7 +101,7 @@ class EventController extends CommonController {
 		    
     		$res = M('event')->add($data);
     		if ($res) {
-    			$this->success('添加成功');
+    			$this->success('添加成功', U('Admin/Event/index'));
     		} else {
     			$this->error('添加失败,请重新添加');
     		}
@@ -166,7 +166,7 @@ class EventController extends CommonController {
 
 		   	$res= M('event')->where('id='.I('post.id'))->save($data);
 		   	if ($res) {
-		   		$this->success('修改成功');
+		   		$this->success('修改成功', U('Admin/Event/index'));
 		   	} else {
 		   		$this->error('修改失败');
 		   	}

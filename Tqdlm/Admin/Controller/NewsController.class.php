@@ -85,7 +85,7 @@ class NewsController extends CommonController
         $data = $this->_checkParam();
         $id = M('news')->add($data);
         if($id){
-            $this->success("添加成功");
+            $this->success("添加成功", U('Admin/News/index'));
         }else{
             $this->success("添加失败");
         }
@@ -115,7 +115,7 @@ class NewsController extends CommonController
         
         $row = M('News')->where('id='.$id)->save($data);
         if($row){
-            $this->success("更新成功");
+            $this->success("更新成功", U('Admin/News/index'));
         }else{
             $this->success("更新失败!",$_SERVER['REQUEST_URI']);
         }
