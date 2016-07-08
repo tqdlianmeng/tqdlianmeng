@@ -32,7 +32,7 @@ class ApiController extends ApiComController {
 			if($v['type'] == '3') {
 				$v['cover'] = '';
 			}
-			$v['content'] = strip_tags($v['content']);
+			$v['content'] = htmlspecialchars(strip_tags($v['content']));
 			$v['crt_ts'] = date('Y-m-d H:i:s', $v['crt_ts']);
 		}
 
@@ -58,7 +58,7 @@ class ApiController extends ApiComController {
 
 		$info = M('news')->where($where)->field($field)->find();
 		if (!empty($info['content']) && !empty($info['id'])) {
-			$info['content'] = htmlspecialchars($info['content']);
+			$info['content'] = htmlspecialchars($v['content']);
 			M('news')->where('id='.$id)->setInc('view');
 			$result = array('detail' => $info);
 			$this->setSucceeded(true);
@@ -87,7 +87,7 @@ class ApiController extends ApiComController {
 		$field = 'id, title, content, crt_ts, view, author';
 		$info = M('news')->where($where)->field($field)->order('crt_ts DESC')->limit('1')->find();
 		$info['crt_ts'] = date('Y-m-d H:i:s', $info['crt_ts']);
-		if (!empty($info['content'])) $info['content'] = strip_tags($info['content']);
+		if (!empty($info['content'])) $info['content'] = htmlspecialchars(strip_tags($v['content']));
 
 		$result = array('top' => $info);
 		$this->setSucceeded(true);
@@ -101,7 +101,7 @@ class ApiController extends ApiComController {
 	public function latestNews() {
 		$m_news = M('news');
 		$field = 'title, type, id';
-		$info = $m_news->field($field)->limit('0 , 10')->select();
+		$info = $m_news->field($field)->limit('0 , 10')->order('crt_ts DESC')->select();
 		$result = array('item' => $info);
 
 		$this->setSucceeded(true);
@@ -124,7 +124,7 @@ class ApiController extends ApiComController {
 		$m_news = M('slide');
 		$where = array('is_online' => '1');
 		$field = 'img';
-		$slides = $m_news->where($where)->field($field)->select();
+		$slides = $m_news->where($where)->field($field)->order('crt_ts DESC')->select();
 
 		$result = array('item' => $slides);
 		$this->setSucceeded(true);
@@ -132,17 +132,58 @@ class ApiController extends ApiComController {
 		$this->output();
 	}
 
-
+	/**
+	 * 获取赛事资讯
+	 */
 	public function getEvent() {
 		$type = $_REQUEST['type'];
 		$types = array('0', '1');
+		$p = empty($_REQUEST['p']) ? 1 : intval($_REQUEST['p']);
 		if (!in_array($type, $types)) {
 			$this->setErrCode(1);
 			$this->setErrMsg('type参数错误');
 			$this->output();
 		}
 
+		$m_event = M('event');
 		$where = array('is_online' => '1', 'type' => $type);
-		
+
+		$page_size = 4;
+		$count = $m_event->where($where)->count();
+		$total = intval(ceil($count/$page_size));
+		$start = $page_size * ($p - 1);
+		$end = $start + $page_size;
+
+		$limit = $start.' , '.$page_size;
+		$field = 'id, title, cover, content, crt_ts, view';
+		$info = $m_event->where($where)->limit($limit)->field($field)->order('crt_ts DESC')->select();
+		foreach ($info as $k => &$v) {
+			if ($v['content']) $v['content'] = htmlspecialchars(strip_tags($v['content']));
+			$v['crt_ts'] = date('Y-m-d H:i:s', $v['crt_ts']);
+		}
+
+		$result = array('item' => $info);
+		$this->setSucceeded(true);
+		$this->setResult($result);
+		$this->output();
+	}
+
+
+	public function getActivity() {
+		$type = $_REQUEST['type'];
+		$types = array('0', '1', '2', '3', '4', '5');
+		if (!in_array($type, $types)) {
+			$this->setErrCode(1);
+			$this->setErrMsg('type参数错误');
+			$this->output();
+		}
+
+		$m_activity = M('activity');
+		$where = array('is_online' => '1', 'type' => $type);
+		$page_size = 4;
+		$count = $m_event->where($where)->count();
+		$total = intval(ceil($count/$page_size));
+		$start = $page_size * ($p - 1);
+		$end = $start + $page_size;
 	}
 }
