@@ -99,7 +99,14 @@ class ApiController extends ApiComController {
 	 * 最新资讯
 	 */
 	public function latestNews() {
-		$m_news = M('news');
+		$type = $_REQUEST['type'];
+		$types = array('news', 'event', 'activity');
+		if (!in_array($type, $types)) {
+			$this->setErrCode(1);
+			$this->setErrMsg('type参数错误');
+			$this->output();
+		}
+		$m_news = M($type);
 		$field = 'title, type, id';
 		$info = $m_news->field($field)->limit('0 , 10')->order('crt_ts DESC')->select();
 		$result = array('item' => $info);
@@ -232,4 +239,59 @@ class ApiController extends ApiComController {
 		$this->setResult($result);
 		$this->output();
 	}
+
+	/**
+	 * 获取活动详情
+	 */
+	public function activityDetail() {
+		$id = $_REQUEST['id'];
+		if (empty($id)) {
+			$this->setErrCode(1);
+			$this->setErrMsg('内容不存在');
+			$this->output();
+		}
+
+		$m_activity = M('activity');
+		$where = array('id' => $id);
+		$field = 'title, id, type, cover, content, view, attach, crt_ts';
+		$info = $m_activity->where($where)->field($field)->find();
+		if (empty($info)) {
+			$this->setErrCode(1);
+			$this->setErrMsg('内容不存在');
+			$this->output();
+		} else {
+			$info['content'] = htmlspecialchars($info['content']);
+			$result = array('detail' => $info);
+			$this->setSucceeded(true);
+			$this->setResult($result);
+			$this->output();
+		}
+ 	}
+
+ 	public function search() {
+ 		$keyword = $_REQUEST['keyword'];
+ 		$p = empty($_REQUEST['P']) ? 1 : $_REQUEST['p'];
+ 		if (empty($keyword)) {
+ 			$this->setErrCode(1);
+ 			$this->setErrMsg('请输入关键字');
+ 			$this->output();
+ 		}
+ 		// 分页数据
+ 		$page_size = 20;
+ 		$start = ($p-1) * $page_size;
+ 		$end = $start + $page_size;
+
+ 		// 查询
+ 		$sql = "SELECT id, title, from_tab FROM news as n WHERE title LIKE '%{$keyword}%' UNION SELECT id, title, from_tab FROM `event` as e WHERE title LIKE '%{$keyword}%' UNION SELECT id, title, from_tab FROM activity WHERE title LIKE '%{$keyword}%'";
+ 		$ret = M()->query($sql);
+ 		$count = count($ret);
+ 		$total = intval(ceil($count/$page_size));
+ 		$sql .= " LIMIT {$start}, {$end}";
+ 		$res = M()->query($sql);
+ 		
+ 		$result = array('item' => $res, 'current' => $p, 'total' => $total);
+ 		$this->setSucceeded(true);
+ 		$this->setResult($result);
+ 		$this->output();
+ 	}
 }
