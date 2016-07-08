@@ -101,10 +101,34 @@ class EventController extends Controller {
     	}
     }
 
+    public function view() {
+    	$id = I('get.id');
+    	if (empty($id)) {
+    		$this->redirect('Event/index');
+    	}
+
+    	$m_event = M('event');
+    	$data = $m_event->where('id='.$id)->select();
+
+    	$this->assign('data', $data[0]);
+    	$this->display();
+    }
+
+    /**
+     * 编辑赛事资讯
+     */
+    public function edit() {
+    	if(IS_POST) {
+
+    	} else {
+    		$this->display();
+    	}
+    }
+
     /**
      * 删除赛事资讯
      */
-    function delete() {
+    public function delete() {
     	$id = $_POST['id'];
     	$m_event = M('event');
 

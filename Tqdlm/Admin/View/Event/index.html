@@ -155,13 +155,13 @@
 			// 点击查看
 			$('#event_table').on('click', '.view', function(){
 				var id = $(this).attr('data-id');
-				window.location.href = "{:U('Admin/Event/view', array('id'=>"+id+"))}";
+				window.location.href = "__MODULE__/Event/view/id/"+id;
 			});
 
 			// 点击编辑
 			$('#event_table').on('click', '.edit', function(){
 				var id = $(this).attr('data-id');
-				window.location.href = "{:U('Admin/Event/edit', array('id'=>"+id+"))}";
+				window.location.href = "__MODULE__/Event/edit/id/"+id;
 			});
 
 			// 点击删除
