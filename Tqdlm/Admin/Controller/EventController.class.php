@@ -67,6 +67,13 @@ class EventController extends Controller {
      */
     public function add() {
     	if (IS_POST) {
+    		$data = array(
+				'title'     => $_POST['title'],
+				'type'      => $_POST['type'],
+				'content'   => $_POST['content'],
+				'is_online' => $_POST['is_online'],
+				'crt_ts'    => time(),
+    		);
     		$upload = new \Think\Upload();// 实例化上传类
 			$upload->maxSize  = 3145728 ;// 设置附件上传大小
 			$upload->exts     = array('jpg', 'png', 'jpeg', 'zip', 'rar');// 设置附件上传类型
@@ -77,19 +84,16 @@ class EventController extends Controller {
 		    if (!$info) {// 上传错误提示错误信息
 		        $this->error($upload->getError());
 		    } else {// 上传成功
-		    	$cover = './Uploads/'.$info['cover']['savepath'].$info['cover']['savename'];
-		    	$attach = './Uploads/'.$info['attach']['savepath'].$info['attach']['savename'];
+		    	$url = 'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['SCRIPT_NAME']);
+		    	if(!empty($info['cover']['savename'])) {
+		    		$data['cover'] = $url.'/Uploads/'.$info['cover']['savepath'].$info['cover']['savename'];
+		    	}
+		    	if(!empty($info['attach']['savename'])) {
+		    		$data['attach'] = $url.'/Uploads/'.$info['attach']['savepath'].$info['attach']['savename'];
+		    	}
 		    }
 		    
-    		$data = array(
-				'title'     => $_POST['title'],
-				'type'      => $_POST['type'],
-				'content'   => $_POST['content'],
-				'is_online' => $_POST['is_online'],
-				'crt_ts'    => time(),
-				'cover'     => $cover,
-				'attach'    => $attach
-    		);
+    		
     		$res = M('event')->add($data);
     		if ($res) {
     			$this->success('添加成功');
@@ -106,7 +110,6 @@ class EventController extends Controller {
     	if (empty($id)) {
     		$this->redirect('Event/index');
     	}
-
     	$m_event = M('event');
     	$data = $m_event->where('id='.$id)->select();
 
