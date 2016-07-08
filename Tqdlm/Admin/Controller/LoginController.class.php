@@ -8,33 +8,29 @@ class LoginController extends Controller {
         $this -> display();
     }
 
-
-
+    /**
+     * 后台登录
+     */
     public function login() {
+        if (IS_POST) {
+            if(empty($_POST['username']) || empty($_POST['pwd'])){
+                $this->error('帐号或密码不能为空');
+            }
 
-        if(empty($_POST['username'])){
+            $Dao = M("admin");
+            $arr["username"] = $_POST['username'];
+            $arr["pwd"] = md5($_POST['pwd']);
 
-            $this->error('帐号错误!');
-
-	    }elseif (empty($_POST['pwd'])){
-
-	        $this->error('密码必须!');
-	    }
-
-        $Dao = M("admin");
-
-        $arr["username"] = $_POST['username'];
-        $arr["pwd"] = md5($_POST['pwd']);
-
-        $data = $Dao->where($arr)->field("id,username")->select();
-        
-        $_SESSION['username'] = $data[username]; 
-        $_SESSION['id'] = $data[id];
-
-        if($data>0){     
-            $this->success("登陆成功",'Admin/Index/index');    
-        }else{
-            $this->error('登录失败');   
+            $data = $Dao->where($arr)->field("id,username")->select();
+            if ($data>0) {
+                $_SESSION['username'] = $data['username']; 
+                $_SESSION['id'] = $data['id'];    
+                $this->success("登录成功", 'Admin/News/index');    
+            } else {
+                $this->error('账号或密码错误');   
+            }
+        } else {
+            $this->display();
         }
     }
 
