@@ -5,23 +5,74 @@ class ActivityController extends Controller {
     
     public function index() {
 
-        $sel = M('activity');
+        if (IS_AJAX) {
+            $m_act = M('Activity');
+            $requestData= $_REQUEST;
+            $columns = array( 
+                0 => 'title', 
+                1 => 'type',
+                2 => 'view',
+                3 => 'is_online',
+                4 => 'mod_ts'
+            );
 
-        $res = $sel -> field('id,title,type,crt_ts') -> select();
+            // 获取所有记录数
+            $sql = "SELECT title, type, view, is_online, mod_ts, id ";
+            $sql.=" FROM Activity";
+            $total = count($m_act->query($sql));
+            $totalFiltered = $total;
 
-        $type_act = array(
-            '0' => "国际活动",
-            '1' => "中国联盟活动",
-            '2' => "分区协会活动",
-            '3' => "省级协会活动",
-            '4' => "国际、国内会议",
-            '5' => "国际、国内讲习"      
-        );
-        // echo "<pre>";
-        // var_dump($res);
-        // echo  "</pre>";
-        $this->assign('type_act', $type_act);  
-        $this->assign('res', $res);  
+            // 获取搜索
+            $sql = "SELECT title, type, view, is_online, mod_ts, id ";
+            $sql.=" FROM Activity";
+            if( !empty($requestData['search']['value']) ) {  
+                $sql.=" WHERE title LIKE '%".$requestData['search']['value']."%' ";    
+            }
+            $totalFiltered = count($m_act->query($sql));
+            $sql.=" ORDER BY ". $columns[$requestData['order'][0]['column']]." ".$requestData['order'][0]['dir']."  LIMIT ".$requestData['start']." ,".$requestData['length']."   ";
+            $res = $m_act->query($sql);
+
+            $types = array('国际活动', '中国联盟活动', '分区协会活动', '省级协会活动', '国际、国内会议', '国际、国内讲习');
+            $online = array('否', '是');
+            $data = array();
+            foreach( $res as $k => $v ) {
+                $tmp=array();
+                $id = $v['id'];
+                $tmp[] = $v["title"];
+                $tmp[] = $types[$v["type"]];
+                $tmp[] = $v["view"];
+                $tmp[] = $online[$v["is_online"]];
+                $tmp[] = $v["mod_ts"];
+                $tmp[] = "<a class='btn btn-success tip-left view' style='margin-right:15px;' href='javascript:;' data-id='{$id}' title='查看'>查看</a>".
+                         "<a class='btn btn-info tip-left edit' href='javascript:;' style='margin-right:15px;' data-id='{$id}' title='编辑'>编辑</a>".
+                         "<a class='btn btn-danger tip-left del' href='javascript:;' data-id='{$id}' title='删除'>删除</a>";
+                $data[] = $tmp;
+            }
+
+            $json_data = array(
+                "draw"            => intval( $requestData['draw'] ), 
+                "recordsTotal"    => intval( $total ),
+                "recordsFiltered" => intval( $totalFiltered ), 
+                "data"            => $data
+            );
+
+            echo json_encode($json_data);
+            
+        } else {
+            $this->display();
+        }       
+    }
+
+    //点击查看
+    public function view() {
+        $id = I('get.id');
+        if (empty($id)) {
+            $this->redirect('Activity/index');
+        }
+        $m_event = M('activity');
+        $data = $m_event->where('id='.$id)->select();
+
+        $this->assign('data', $data[0]);
         $this->display();
     }
 
@@ -90,11 +141,15 @@ class ActivityController extends Controller {
 
     	$Act = M('activity');
 
-    	if ($Act -> where("id=" . (int)$_POST['id'])->delete()) {
-           echo json_encode(array("status"=>1,"info"=>"删除成功"));
+    	$id = $_POST['id'];
+        
+        $res = $Act->where('id='.intval($id))->delete();
+        if ($res) {
+            $result = array('is_ok' => true);
         } else {
-            $this->error("删除失败");
+            $result = array('is_ok' => false);
         }
+        echo json_encode($result);exit;
     }
 
 
@@ -114,24 +169,11 @@ class ActivityController extends Controller {
 
 
     public function update(){
-        // var_dump($_POST);die();
-        // $list = M("activity");
-        //     $list->where('id='.(int)$_POST['act_id'])->save();
-        //  $sql = $list ->getLastSql();
-        //  echo $sql;
-        // die();
 
         if (IS_POST) {
             $list = M("activity");
-
-            // $res = $list->where('id='.(int)$_POST['act_id'])->save();
-
-            // //echo json_encode($list);
-            // if ($res == 1) {
-            //     $this->success('数据保存成功', 'index');
-            // }
-            // $this->error('数据保存失败', "index");
-            if(empty($_POST['attach']) || empty($_POST['cover'])){
+            
+            if(!empty($_POST['attach']) || !empty($_POST['cover'])){
             
                 $upload = new \Think\Upload();// 实例化上传类
                 $upload->maxSize  = 3145728 ;// 设置附件上传大小
@@ -142,26 +184,35 @@ class ActivityController extends Controller {
                 
             // 上传文件 
                 $info = $upload->upload();
-            }
-            if (!$info) {// 上传错误提示错误信息
-
-                $this->error($upload->getError());
-                   
-            } else {// 上传成功
-                $cover = './Uploads/'.$info['cover']['savepath'].$info['cover']['savename'];
-                $attach = './Uploads/'.$info['attach']['savepath'].$info['attach']['savename'];
-            }
             
-            $data = array(
-                'title'     => $_POST['title'],
-                'author'    => $_POST['author'],
-                'type'      => $_POST['type'],
-                'content'   => $_POST['content'],
-                'is_online' => $_POST['is_online'],
-                'crt_ts'    => time(),
-                'cover'     => $cover,
-                'attach'    => $attach
-            );
+                if (!$info) {// 上传错误提示错误信息
+
+                    $this->error($upload->getError());
+                       
+                } else {// 上传成功
+                    $cover = './Uploads/'.$info['cover']['savepath'].$info['cover']['savename'];
+                    $attach = './Uploads/'.$info['attach']['savepath'].$info['attach']['savename'];
+                }
+            
+                $data = array(
+                    'title'     => $_POST['title'],
+                    'author'    => $_POST['author'],
+                    'type'      => $_POST['type'],
+                    'content'   => $_POST['content'],
+                    'is_online' => $_POST['is_online'],               
+                    'cover'     => $cover,
+                    'attach'    => $attach
+                );
+            }else{
+
+                $data = array(
+                    'title'     => $_POST['title'],
+                    'author'    => $_POST['author'],
+                    'type'      => $_POST['type'],
+                    'content'   => $_POST['content'],
+                    'is_online' => $_POST['is_online']                    
+                );           
+            }
 
             foreach($data as $key => $val){
                 if(empty($val)){
@@ -169,30 +220,16 @@ class ActivityController extends Controller {
                 }
             }
 
-            $res = $list->where('id='.(int)$_POST['act_id'])->save();
+            $res = $list->where('id='.(int)$_POST['act_id'])->save($data);
            
 
             if($res){
-                $this -> success("数据保存成功");
+                $this -> success("活动修改成功");
             }else{
-                $this -> error("数据保存失败");
+                $this -> error("活动修改失败");
             }
         }
     }
-
-
-    // public function sel(){
-
-    //     $sel = M('activity');
-
-    //     $res = $sel -> field('id','title','type','crt_ts') -> select();
-
-
-
-
-
-
-    // }
 
 
 }
