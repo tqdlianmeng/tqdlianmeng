@@ -1,0 +1,151 @@
+<!-- 继承Index/index里的内容 -->
+<extend name="Index/index" />
+
+<block name="title">
+    <title>新闻编辑</title>
+</block>
+<block name="content">
+    <div id="content">
+        <div class="col-sm-12">
+            <div class="page-header">
+                <!-- BREADCRUMBS -->
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="fa fa-home"></i>
+                        <a href="index.html">新闻资讯</a>
+                    </li>
+                    <li>编辑</li>
+                </ul>
+                <!-- /BREADCRUMBS -->
+            </div>
+
+            <div class="box-body big">
+                <form role="form" action="{:U('Admin/News/update')}" method="post" enctype="multipart/form-data">
+                    <div class="form-group col-md-6">
+                        <label class="col-sm-3 control-label">标题:</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" type="text" name="title" value="{$info.title}" >
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="col-sm-3 control-label">类型:</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" name="type">
+                                <option value="0">国际新闻</option>
+                                <option value="1">国内新闻</option>
+                                <option value="2">中国联盟</option>
+                                <option value="3">联盟公告</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="col-sm-3 control-label">浏览人数:</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" type="text" name="view" value="{$info.view}" >
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="col-sm-3 control-label">置顶:</label>
+                        <div class="col-sm-9">
+                            <input type="radio" name="is_top" value="1" <if condition="($info.is_top eq 1)">checked</if>>是
+                            <input type="radio" name="is_top" value="0" <if condition="($info.is_top eq 0)">checked</if>>否
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6"></div>
+                    <div class="form-group col-md-6">
+                        <label class="col-sm-3 control-label">上线:</label>
+                        <div class="col-sm-9">
+                            <input type="radio" name="is_online" value="1" <if condition="($info.is_online eq 1)">checked</if>>是
+                            <input type="radio" name="is_online" value="0" <if condition="($info.is_online eq 0)">checked</if>>否
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="col-sm-3 control-label">封面图:</label>
+                        <div class="col-sm-9">
+                            <div class="col-sm-3">
+                                <img src="" alt="" id="cover_box" style="display:none">
+                                <a id="upload">
+                                    <img src="{$info.cover}" width="70px" alt="" id="cover_prev">
+                                </a>
+                            </div>
+
+                            <div class="col-sm-6" style="border-left:none;">
+                                <button type="button" class="btn btn-primary" id="cancel">取消封面</button>
+                                <input type="file" name="cover" id="cover" class="hidden" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label class="col-sm-1 control-label">内容:</label>
+                        <div class="col-sm-11">
+                            <script type="text/plain" id="container" name="content">
+                                {$info.content}
+                            </script>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-12 col-md-offset-8">
+                        <input type="hidden" name="id" value="{$info.id}">
+                        <button type="submit" class="btn btn-success">提交</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="js">
+    <script type="text/javascript" src="__PUBLIC__/Admin/js/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/Admin/js/ueditor/ueditor.all.js"></script>
+    <!--<script src="/static/admin/js/news/add.js"></script>-->
+    <script>
+        //选中
+        $('select').val("{$info.type}").change();
+
+        var default_img = "__PUBLIC__/Admin/img/default-thumbnail.png";
+
+        //图片上传
+        $('#upload').click(function() {
+            $('input[name=cover]').click();
+        });
+
+        $('#cancel').click(function() {
+            $('#upload').find('img').attr('src', default_img);
+            $('input[name=cover]').val('');
+        });
+
+        // 头像文件验证
+        $('#cover').change(function() {
+            var file = $(this)[0].files[0];
+            //验证文件大小
+            var size = file.size;
+            var max_size = 1000000;
+            if (size > max_size) {
+                alert('文件过大，请重新选择！');
+                $(this).val('');
+                return false;
+            }
+            //验证文件类型
+            var mime = file.type;
+            var allow_type = ['image/jpeg', 'image/gif', 'image/png', 'image/bmp'];
+            if (allow_type.indexOf(mime) == -1) {
+                alert('文件类型有误，请选图片文件！');
+                $(this).val('');
+                return false;
+            }
+
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            console.log(reader);
+            reader.onload = function(){
+                $('#cover_box').attr('src', reader.result);
+                $('#cover_box')[0].onload = function() {
+                    $('#cover_prev').attr('src', reader.result);
+                }
+            }
+        });
+
+        //编辑器
+        var ue = UE.getEditor('container',{
+            initialFrameHeight: 600,
+        });
+    </script>
+</block>

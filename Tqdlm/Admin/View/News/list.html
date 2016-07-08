@@ -1,0 +1,154 @@
+<!-- 继承Index/index里的内容 -->
+<extend name="Index/index" />
+
+<block name="title">
+    <title>新闻列表</title>
+</block>
+
+<block name="content">
+    <!-- PAGE HEADER-->
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="page-header" style="min-height:45px;">
+                <!-- STYLER -->
+
+                <!-- /STYLER -->
+                <!-- BREADCRUMBS -->
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="fa fa-home"></i>
+                        <a href="index.html">新闻资讯</a>
+                    </li>
+                    <li>新闻资讯列表</li>
+                </ul>
+                <!-- /BREADCRUMBS -->
+            </div>
+        </div>
+    </div>
+    <!-- /PAGE HEADER -->
+    <!-- DASHBOARD CONTENT -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- BOX -->
+                    <div class="box border inverse">
+                        <div class="box-title">
+                            <h4><i class="fa fa-table"></i>新闻资讯列表</h4>
+                        </div>
+                        <div class="box-body">
+                            <table id="event_table" cellpadding="0" cellspacing="0" border="0" class="datatable table table-striped table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>标题</th>
+                                    <th>类型</th>
+                                    <th class="hidden-xs">浏览人数</th>
+                                    <th>是否显示</th>
+                                    <th class="hidden-xs">修改时间</th>
+                                    <th class="hidden-xs">操作</th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- /BOX -->
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+
+<block name="js">
+    <script type="text/javascript" src="__PUBLIC__/Admin/js/datatables/media/js/jquery.dataTables.min.1.10.8.js"></script>
+    // <script type="text/javascript" src="__PUBLIC__/Admin/js/datatables/media/js/jquery.dataTables.bootstrap.js"></script>
+
+    <script type="text/javascript">
+        $(function(){
+
+            var oTable1 = $('#event_table').dataTable( {
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    'url': "{:U('Admin/News/getList')}",
+                },
+                "columnDefs": [{
+                    orderable:false,          //禁用排序
+                    targets:[0,1,2,3,5]   //指定的列
+                }],
+                "autoWidth": false,
+                "order": [[ 4, "desc" ]],
+                "lengthMenu": [[10, 20, 30, 50], [10, 20, 30, 50]],
+                "language": {
+                    "decimal":        "",
+                    "emptyTable":     "没有检索到数据",
+                    "info":           "从 _START_ 到 _END_ / 共 _TOTAL_ 条数据",
+                    "infoEmpty":      "显示 0 到 0 / 共 0 条数据",
+                    "infoFiltered":   "(从 _MAX_ 条数据中检索)",
+                    "infoPostFix":    "",
+                    "thousands":      ",",
+                    "lengthMenu":     "显示 _MENU_ 条",
+                    "loadingRecords": "加载中...",
+                    "processing":     "",
+                    "search":         "搜索：",
+                    "zeroRecords":    "抱歉，没有找到",
+                    "paginate": {
+                        "first":      "首页",
+                        "last":       "尾页",
+                        "next":       "下一页",
+                        "previous":   "上一页"
+                    },
+                    "aria": {
+                        "sortAscending":  ": 升序排列",
+                        "sortDescending": ": 降序排列"
+                    }
+                }
+
+            } );
+            $('.datatable').each(function(){
+                var datatable = $(this);
+                var search_input = datatable.closest('.dataTables_wrapper').find('div[id$=_filter] input');
+                search_input.attr('placeholder', '标题');
+                search_input.addClass(' input-sm');
+                var length_sel = datatable.closest('.dataTables_wrapper').find('div[id$=_length] select');
+                length_sel.addClass(' input-sm');
+            });
+            $('#event_table_paginate').find('li.prev').hide();
+            $('#event_table_paginate').find('li.next').hide();
+
+            // 点击查看
+            $('#event_table').on('click', '.view', function(){
+                var id = $(this).attr('data-id');
+                window.location.href = "__MODULE__/Event/view/id/"+id;
+            });
+
+            // 点击编辑
+            $('#event_table').on('click', '.edit', function(){
+                var id = $(this).attr('data-id');
+                window.location.href = "__MODULE__/Event/edit/id/"+id;
+            });
+
+            // 点击删除
+            $('#event_table').on('click', '.del', function(){
+                if(!confirm('确定删除？')) return false;
+
+                var id = $(this).attr('data-id');
+                $.ajax({
+                    url:"{:U('Admin/Event/delete')}",
+                    data:{id:id},
+                    type:'post',
+                    async:false,
+                    dataType:'json',
+                    success:function(data){
+                        if(data.is_ok){
+                            alert('删除成功');
+                            oTable1.fnDraw();
+                        } else {
+                            alert('删除失败');
+                        }
+                    }
+                });
+            });
+
+        })
+    </script>
+</block>

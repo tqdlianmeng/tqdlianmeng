@@ -55,7 +55,7 @@ class EventController extends Controller {
 				"data"            => $data
 			);
 
-			echo json_encode($json_data);
+			echo json_encode($json_data);exit;
 			
 		} else {
 	        $this->display();
@@ -74,6 +74,11 @@ class EventController extends Controller {
 				'is_online' => $_POST['is_online'],
 				'crt_ts'    => time(),
     		);
+    		foreach ($dat as $k => $v) {
+    			if(empty($v)) {
+    				$this->error('必填选项不能为空')；
+    			}
+    		}
     		$upload = new \Think\Upload();// 实例化上传类
 			$upload->maxSize  = 3145728 ;// 设置附件上传大小
 			$upload->exts     = array('jpg', 'png', 'jpeg', 'zip', 'rar');// 设置附件上传类型
@@ -93,7 +98,6 @@ class EventController extends Controller {
 		    	}
 		    }
 		    
-    		
     		$res = M('event')->add($data);
     		if ($res) {
     			$this->success('添加成功');
@@ -135,6 +139,12 @@ class EventController extends Controller {
 				'content'   => $_POST['content'],
 				'is_online' => $_POST['is_online'],
     		);
+    		foreach ($dat as $k => $v) {
+    			if(empty($v)) {
+    				$this->error('必填选项不能为空')；
+    			}
+    		}
+
     		$upload = new \Think\Upload();// 实例化上传类
 			$upload->maxSize  = 3145728 ;// 设置附件上传大小
 			$upload->exts     = array('jpg', 'png', 'jpeg', 'zip', 'rar');// 设置附件上传类型
