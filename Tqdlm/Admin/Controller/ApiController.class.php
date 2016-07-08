@@ -78,7 +78,7 @@ class ApiController extends ApiComController {
 		$type = $_REQUEST['type'];
 		$types = array('0', '1', '2', '3');
 
-		if (empty($type) || !in_array($type, $types)) {
+		if (!in_array($type, $types)) {
 			$this->setErrCode(1);
 			$this->setErrMsg('类型参数有误');
 			$this->output();
@@ -109,10 +109,12 @@ class ApiController extends ApiComController {
 		$this->output();
 	}
 
-
+	/**
+	 * 获取赛事资讯的轮播图 1-国际赛事 2-国内赛事
+	 */
 	public function getSlide() {
 		$type = $_REQUEST['type'];
-		$types = array('0', '1');
+		$types = array('1', '2');
 		if (empty($type) || !in_array($type, $types)) {
 			$this->setErrCode(1);
 			$this->setErrMsg('type参数错误');
@@ -121,5 +123,26 @@ class ApiController extends ApiComController {
 
 		$m_news = M('slide');
 		$where = array('is_online' => '1');
+		$field = 'img';
+		$slides = $m_news->where($where)->field($field)->select();
+
+		$result = array('item' => $slides);
+		$this->setSucceeded(true);
+		$this->setResult($result);
+		$this->output();
+	}
+
+
+	public function getEvent() {
+		$type = $_REQUEST['type'];
+		$types = array('0', '1');
+		if (!in_array($type, $types)) {
+			$this->setErrCode(1);
+			$this->setErrMsg('type参数错误');
+			$this->output();
+		}
+
+		$where = array('is_online' => '1', 'type' => $type);
+		
 	}
 }
