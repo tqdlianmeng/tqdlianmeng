@@ -77,7 +77,7 @@ class EventController extends Controller {
     		$upload = new \Think\Upload();// 实例化上传类
 			$upload->maxSize  = 3145728 ;// 设置附件上传大小
 			$upload->exts     = array('jpg', 'png', 'jpeg', 'zip', 'rar');// 设置附件上传类型
-			$upload->rootPath = './Uploads/'; // 设置附件上传根目录
+			$upload->rootPath = './Public/Uploads/'; // 设置附件上传根目录
 			$upload->savePath = 'event'; // 设置附件上传（子）目录
 		    // 上传文件 
 		    $info = $upload->upload();
@@ -86,10 +86,10 @@ class EventController extends Controller {
 		    } else {// 上传成功
 		    	$url = 'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['SCRIPT_NAME']);
 		    	if(!empty($info['cover']['savename'])) {
-		    		$data['cover'] = $url.'/Uploads/'.$info['cover']['savepath'].$info['cover']['savename'];
+		    		$data['cover'] = $url.'/Public/Uploads/'.$info['cover']['savepath'].$info['cover']['savename'];
 		    	}
 		    	if(!empty($info['attach']['savename'])) {
-		    		$data['attach'] = $url.'/Uploads/'.$info['attach']['savepath'].$info['attach']['savename'];
+		    		$data['attach'] = $url.'/Public/Uploads/'.$info['attach']['savepath'].$info['attach']['savename'];
 		    	}
 		    }
 		    
@@ -105,6 +105,9 @@ class EventController extends Controller {
     	}
     }
 
+    /**
+     * 查看赛事资讯
+     */
     public function view() {
     	$id = I('get.id');
     	if (empty($id)) {
@@ -122,8 +125,49 @@ class EventController extends Controller {
      */
     public function edit() {
     	if(IS_POST) {
+    		$id = I('post.id');
+    		if (empty($id)) {
+    			$this->redirect('Event/index');
+    		}
+		   	$data = array(
+				'title'     => $_POST['title'],
+				'type'      => $_POST['type'],
+				'content'   => $_POST['content'],
+				'is_online' => $_POST['is_online'],
+    		);
+    		$upload = new \Think\Upload();// 实例化上传类
+			$upload->maxSize  = 3145728 ;// 设置附件上传大小
+			$upload->exts     = array('jpg', 'png', 'jpeg', 'zip', 'rar');// 设置附件上传类型
+			$upload->rootPath = './Public/Uploads/'; // 设置附件上传根目录
+			$upload->savePath = 'event'; // 设置附件上传（子）目录
+		    // 上传文件 
+		    $info = $upload->upload();
+	    	$url = 'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['SCRIPT_NAME']);
+
+		   	if(!empty($info['cover'])) {
+		   		$data['cover'] = $url.'/Public/Uploads/'.$info['cover']['savepath'].$info['cover']['savename'];
+		   	}
+
+		   	if (!empty($info['attach'])) {
+		   		$data['attach'] = $url.'/Public/Uploads/'.$info['attach']['savepath'].$info['attach']['savename'];
+		   	}
+
+		   	$res= M('event')->where('id='.I('post.id'))->save($data);
+		   	if ($res) {
+		   		$this->success('修改成功');
+		   	} else {
+		   		$this->error('修改失败');
+		   	}
 
     	} else {
+    		$id = I('get.id');
+	    	if (empty($id)) {
+	    		$this->redirect('Event/index');
+	    	}
+	    	$m_event = M('event');
+	    	$data = $m_event->where('id='.$id)->select();
+
+	    	$this->assign('data', $data[0]);
     		$this->display();
     	}
     }
