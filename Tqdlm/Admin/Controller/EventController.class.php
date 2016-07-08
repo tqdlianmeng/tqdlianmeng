@@ -70,7 +70,6 @@ class EventController extends CommonController {
     		$data = array(
 				'title'     => $_POST['title'],
                 'author'    => $_POST['author'],
-				'type'      => $_POST['type'],
 				'content'   => $_POST['content'],
 				'crt_ts'    => time(),
     		);
@@ -80,7 +79,7 @@ class EventController extends CommonController {
     			}
     		}
             $data['is_online'] = $_POST['is_online'];
-
+            $data['type']      = $_POST['type'];
     		$upload = new \Think\Upload();// 实例化上传类
 			$upload->maxSize  = 3145728 ;// 设置附件上传大小
 			$upload->exts     = array('jpg', 'png', 'jpeg', 'zip', 'rar');// 设置附件上传类型
@@ -138,7 +137,6 @@ class EventController extends CommonController {
 		   	$data = array(
 				'title'     => $_POST['title'],
                 'author'    => $_POST['author'],
-				'type'      => $_POST['type'],
 				'content'   => $_POST['content']
     		);
     		foreach ($dat as $k => $v) {
@@ -148,6 +146,7 @@ class EventController extends CommonController {
     		}
 
             $data['is_online'] = $_POST['is_online'];
+            $data['type']      = $_POST['type'];
     		$upload = new \Think\Upload();// 实例化上传类
 			$upload->maxSize  = 3145728 ;// 设置附件上传大小
 			$upload->exts     = array('jpg', 'png', 'jpeg', 'zip', 'rar');// 设置附件上传类型
