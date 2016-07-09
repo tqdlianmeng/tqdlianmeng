@@ -32,7 +32,7 @@ class ApiController extends ApiComController {
 			if($v['type'] == '3') {
 				$v['cover'] = '';
 			}
-			$v['content'] = htmlspecialchars(strip_tags($v['content']));
+			$v['content'] = strip_tags($v['content']);
 			$v['crt_ts'] = date('Y-m-d H:i:s', $v['crt_ts']);
 		}
 
@@ -58,7 +58,6 @@ class ApiController extends ApiComController {
 
 		$info = M('news')->where($where)->field($field)->find();
 		if (!empty($info['content']) && !empty($info['id'])) {
-			$info['content'] = htmlspecialchars($info['content']);
 			$info['crt_ts'] = date('Y-m-d H:i:s', $info['crt_ts']);
 			M('news')->where('id='.$id)->setInc('view');
 			$result = array('detail' => $info);
@@ -89,7 +88,7 @@ class ApiController extends ApiComController {
 		$info = M('news')->where($where)->field($field)->order('crt_ts DESC')->limit('1')->find();
 		if (!empty($info['content']) && !empty($info['id'])) {
 			$info['crt_ts'] = date('Y-m-d H:i:s', $info['crt_ts']);
-			$info['content'] = htmlspecialchars(strip_tags($v['content']));
+			$info['content'] = strip_tags($v['content']);
 		}
 
 		$result = array('top' => $info);
@@ -168,7 +167,7 @@ class ApiController extends ApiComController {
 		$field = 'id, title, cover, content, crt_ts, view';
 		$info = $m_event->where($where)->limit($limit)->field($field)->order('crt_ts DESC')->select();
 		foreach ($info as $k => &$v) {
-			if ($v['content']) $v['content'] = htmlspecialchars(strip_tags($v['content']));
+			if ($v['content']) $v['content'] = strip_tags($v['content']);
 			$v['crt_ts'] = date('Y-m-d H:i:s', $v['crt_ts']);
 		}
 
@@ -194,7 +193,6 @@ class ApiController extends ApiComController {
 		$res = $m_event -> where(array('id'=>$id, 'is_online'=>'1')) -> field("mod_ts,is_online", true) -> find();
 
 		if(!empty($res['id']) && $res['content'] != ''){
-			$res['content'] = htmlspecialchars($res['content']);
 			$res['crt_ts']  = date('Y-m-d H:i:s', $res['crt_ts']);
 			$m_event -> where('id='.$id) -> setInc('view');
 			$result = array('detail' => $res);
@@ -263,7 +261,7 @@ class ApiController extends ApiComController {
 			$this->setErrMsg('内容不存在');
 			$this->output();
 		} else {
-			$info['content'] = htmlspecialchars($info['content']);
+			$info['crt_ts'] = date('Y-m-d H:i:s', $info['crt_ts']);
 			$m_activity -> where('id='.$id) -> setInc('view');
 
 			$result = array('detail' => $info);
