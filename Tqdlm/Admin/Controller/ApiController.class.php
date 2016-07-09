@@ -309,7 +309,7 @@ class ApiController extends ApiComController {
 		$field = 'title, type, id, crt_ts';
 		$info = $m_news->field($field)->limit('0 , 2')->order('crt_ts DESC')->select();
 		foreach ($info as $k => &$v) {
-			$v['crt_ts'] = date('Y-m-d H:i:s', $v['crt_ts']);
+			$v['crt_ts'] = date('Y-m-d', $v['crt_ts']);
 		}
 		$result = array('item' => $info);
 
@@ -329,7 +329,7 @@ class ApiController extends ApiComController {
  		$tmp = array();
  		foreach ($tables as $k => $v) {
  			$res = M($v)->field($field)->order($order)->limit($limit)->find();
- 			$res['crt_ts'] = date('Y-m-d H:i:s', $res['crt_ts']);
+ 			$res['crt_ts'] = date('Y-m-d', $res['crt_ts']);
  			$tmp[] = $res; 
  		}
  		
