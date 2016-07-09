@@ -32,7 +32,7 @@ class ApiController extends ApiComController {
 			if($v['type'] == '3') {
 				$v['cover'] = '';
 			}
-			$v['content'] = strip_tags($v['content']);
+			$v['content'] = mb_substr(strip_tags($v['content']), 0, 60, 'UTF-8');
 			$v['crt_ts'] = date('Y-m-d H:i:s', $v['crt_ts']);
 		}
 
@@ -88,7 +88,7 @@ class ApiController extends ApiComController {
 		$info = M('news')->where($where)->field($field)->order('crt_ts DESC')->limit('1')->find();
 		if (!empty($info['content']) && !empty($info['id'])) {
 			$info['crt_ts'] = date('Y-m-d H:i:s', $info['crt_ts']);
-			$info['content'] = strip_tags($v['content']);
+			$info['content'] = mb_substr(strip_tags($v['content']), 0, 60, 'UTF-8');
 		}
 
 		$result = array('top' => $info);
@@ -167,7 +167,7 @@ class ApiController extends ApiComController {
 		$field = 'id, title, cover, content, crt_ts, view';
 		$info = $m_event->where($where)->limit($limit)->field($field)->order('crt_ts DESC')->select();
 		foreach ($info as $k => &$v) {
-			if ($v['content']) $v['content'] = strip_tags($v['content']);
+			if ($v['content']) $v['content'] = mb_substr(strip_tags($v['content']), 0, 60, 'UTF-8');
 			$v['crt_ts'] = date('Y-m-d H:i:s', $v['crt_ts']);
 		}
 
