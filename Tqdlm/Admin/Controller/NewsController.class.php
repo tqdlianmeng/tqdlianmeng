@@ -83,6 +83,7 @@ class NewsController extends CommonController
     public function create()
     {
         $data = $this->_checkParam();
+
         $id = M('news')->add($data);
         if ($data['is_top'] == '1') {
             // 如果这条新闻置顶 其他新闻全不置顶
@@ -180,7 +181,7 @@ class NewsController extends CommonController
             'title'     => $_POST['title'],
             'author'    => $_POST['author'],
             'type'      => $_POST['type'],
-            'cover'     => $cover,
+            'cover'     => $_POST['type'] == '3' ? '' : $cover,
             'content'   => $_POST['content'],
             'is_top'    => $_POST['is_top'],
             'is_online' => $_POST['is_online'],
