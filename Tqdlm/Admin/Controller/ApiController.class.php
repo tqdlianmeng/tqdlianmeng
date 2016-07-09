@@ -261,6 +261,8 @@ class ApiController extends ApiComController {
 			$this->output();
 		} else {
 			$info['content'] = htmlspecialchars($info['content']);
+			$m_activity -> where('id='.$id) -> setInc('view');
+			
 			$result = array('detail' => $info);
 			$this->setSucceeded(true);
 			$this->setResult($result);
@@ -268,6 +270,9 @@ class ApiController extends ApiComController {
 		}
  	}
 
+ 	/**
+ 	 * 搜索新闻\活动\赛事资讯
+ 	 */
  	public function search() {
  		$keyword = $_REQUEST['keyword'];
  		$p = empty($_REQUEST['P']) ? 1 : $_REQUEST['p'];
