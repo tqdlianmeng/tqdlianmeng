@@ -84,6 +84,11 @@ class NewsController extends CommonController
     {
         $data = $this->_checkParam();
         $id = M('news')->add($data);
+        if ($data['is_top'] == '1') {
+            // 如果这条新闻置顶 其他新闻全不置顶
+            $where = "is_top = '1' And id <> {$id} AND type = '".$data['type']."'";
+            M('news')->where($where)->save(array('is_top' => '0'));
+        }
         if($id){
             $this->success("添加成功", U('Admin/News/index'));
         }else{
@@ -115,6 +120,12 @@ class NewsController extends CommonController
         
         $row = M('News')->where('id='.$id)->save($data);
         if($row){
+            if ($data['is_top'] == '1') {
+                // 如果这条新闻置顶 其他新闻全不置顶
+                $where = "is_top = '1' And id <> {$id} AND type = '".$data['type']."'";
+                M('news')->where($where)->save(array('is_top' => '0'));
+            }
+
             $this->success("更新成功", U('Admin/News/index'));
         }else{
             $this->success("更新失败!",$_SERVER['REQUEST_URI']);
