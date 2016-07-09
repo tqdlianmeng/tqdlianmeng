@@ -308,6 +308,9 @@ class ApiController extends ApiComController {
 		$m_news = M('news');
 		$field = 'title, type, id, crt_ts';
 		$info = $m_news->field($field)->limit('0 , 2')->order('crt_ts DESC')->select();
+		foreach ($info as $k => &$v) {
+			$v['crt_ts'] = date('Y-m-d H:i:s', $v['crt_ts']);
+		}
 		$result = array('item' => $info);
 
 		$this->setSucceeded(true);
@@ -325,7 +328,9 @@ class ApiController extends ApiComController {
  		$tables = array('event', 'activity');
  		$tmp = array();
  		foreach ($tables as $k => $v) {
- 			$tmp[] = M($v)->field($field)->order($order)->limit($limit)->find();
+ 			$res = M($v)->field($field)->order($order)->limit($limit)->find();
+ 			$res['crt_ts'] = date('Y-m-d H:i:s', $res['crt_ts']);
+ 			$tmp[] = $res; 
  		}
  		
  		$this->setSucceeded(true);
