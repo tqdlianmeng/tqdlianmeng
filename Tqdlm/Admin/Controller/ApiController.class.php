@@ -254,7 +254,7 @@ class ApiController extends ApiComController {
 
 		$m_activity = M('activity');
 		$where = array('id' => $id);
-		$field = 'title, id, type, cover, content, view, attach, crt_ts';
+		$field = 'title, id, type, author, content, view, attach, crt_ts';
 		$info = $m_activity->where($where)->field($field)->find();
 		if (empty($info)) {
 			$this->setErrCode(1);
@@ -288,7 +288,7 @@ class ApiController extends ApiComController {
  		$end = $start + $page_size;
 
  		// 查询
- 		$sql = "SELECT id, title, from_tab FROM news as n WHERE title LIKE '%{$keyword}%' UNION SELECT id, title, from_tab FROM `event` as e WHERE title LIKE '%{$keyword}%' UNION SELECT id, title, from_tab FROM activity WHERE title LIKE '%{$keyword}%'";
+ 		$sql = "SELECT id, title, from_tab FROM news WHERE title LIKE '%{$keyword}%' UNION SELECT id, title, from_tab FROM `event` WHERE title LIKE '%{$keyword}%' UNION SELECT id, title, from_tab FROM activity WHERE title LIKE '%{$keyword}%'";
  		$ret = M()->query($sql);
  		$count = count($ret);
  		$total = intval(ceil($count/$page_size));
@@ -298,6 +298,38 @@ class ApiController extends ApiComController {
  		$result = array('item' => $res, 'current' => $p, 'total' => $total);
  		$this->setSucceeded(true);
  		$this->setResult($result);
+ 		$this->output();
+ 	}
+
+ 	/**
+ 	 * 获取首页的两条最新资讯
+ 	 */
+ 	public function getIndexTwoNews() {
+		$m_news = M('news');
+		$field = 'title, type, id, crt_ts';
+		$info = $m_news->field($field)->limit('0 , 2')->order('crt_ts DESC')->select();
+		$result = array('item' => $info);
+
+		$this->setSucceeded(true);
+		$this->setResult($result);
+		$this->output();
+ 	}
+
+ 	/**
+ 	 * 获取首页赛事和活动资讯(各一条)
+ 	 */
+ 	public function getIndexTwoItem() {
+ 		$field = 'title, id, from_tab, crt_ts';
+ 		$limit = '0, 1';
+ 		$order = 'crt_ts DESC';
+ 		$tables = array('event', 'activity');
+ 		$tmp = array();
+ 		foreach ($tables as $k => $v) {
+ 			$tmp[] = M($v)->field($field)->order($order)->limit($limit)->find();
+ 		}
+ 		
+ 		$this->setSucceeded(true);
+ 		$this->setResult(array('item' => $tmp));
  		$this->output();
  	}
 }
