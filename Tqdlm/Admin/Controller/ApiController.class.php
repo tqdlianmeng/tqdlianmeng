@@ -59,6 +59,7 @@ class ApiController extends ApiComController {
 		$info = M('news')->where($where)->field($field)->find();
 		if (!empty($info['content']) && !empty($info['id'])) {
 			$info['content'] = htmlspecialchars($info['content']);
+			$info['crt_ts'] = date('Y-m-d H:i:s', $info['crt_ts']);
 			M('news')->where('id='.$id)->setInc('view');
 			$result = array('detail' => $info);
 			$this->setSucceeded(true);
@@ -133,7 +134,7 @@ class ApiController extends ApiComController {
 		$m_news = M('slide');
 		$where = array('is_online' => '1');
 		$field = 'img';
-		$slides = $m_news->where($where)->field($field)->order('crt_ts DESC')->select();
+		$slides = $m_news->where($where)->field($field)->order('crt_ts DESC')->limit('0,5')->select();
 
 		$result = array('item' => $slides);
 		$this->setSucceeded(true);
