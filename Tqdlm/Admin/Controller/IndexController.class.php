@@ -22,7 +22,9 @@ class IndexController extends CommonController {
     	}else{
     		$res = $u_pwd -> where("id=".$_SESSION['id']) -> save(array('pwd' => md5($_POST['new_pwd'])));
     		if($res){
-    			$this->success('管理密码修改成功', U('Admin/News/index'));
+    			session_unset();
+        		session_destroy();
+    			$this->success('管理密码修改成功,请重新登录', U('Admin/Login/index'),3);
     		}else{
     			$this->error('管理密码修改失败', U('Admin/News/index'));
     		}
