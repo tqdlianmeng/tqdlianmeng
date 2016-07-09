@@ -99,7 +99,14 @@ class ApiController extends ApiComController {
 	 * 最新资讯
 	 */
 	public function latestNews() {
-		$m_news = M('news');
+		$type = $_REQUEST['type'];
+		$types = array('news', 'event', 'activity');
+		if (!in_array($type, $types)) {
+			$this->setErrCode(1);
+			$this->setErrMsg('type参数错误');
+			$this->output();
+		}
+		$m_news = M($type);
 		$field = 'title, type, id';
 		$info = $m_news->field($field)->limit('0 , 10')->order('crt_ts DESC')->select();
 		$result = array('item' => $info);
@@ -135,7 +142,7 @@ class ApiController extends ApiComController {
 	/**
 	 * 获取赛事资讯列表
 	 */
-	public function getEvent() {
+	public function getEventList() {
 		$type = $_REQUEST['type'];
 		$types = array('0', '1');
 		$p = empty($_REQUEST['p']) ? 1 : intval($_REQUEST['p']);
@@ -162,7 +169,7 @@ class ApiController extends ApiComController {
 			$v['crt_ts'] = date('Y-m-d H:i:s', $v['crt_ts']);
 		}
 
-		$result = array('item' => $info);
+		$result = array('item' => $info, 'current' => $p, 'total' => $total);
 		$this->setSucceeded(true);
 		$this->setResult($result);
 		$this->output();
@@ -199,8 +206,11 @@ class ApiController extends ApiComController {
 
 	}
 
-
+	/**
+	 * 获取活动列表
+	 */
 	public function getActivity() {
+		$p = empty($_REQUEST['p']) ? 1 : intval($_REQUEST);
 		$type = $_REQUEST['type'];
 		$types = array('0', '1', '2', '3', '4', '5');
 		if (!in_array($type, $types)) {
@@ -211,10 +221,77 @@ class ApiController extends ApiComController {
 
 		$m_activity = M('activity');
 		$where = array('is_online' => '1', 'type' => $type);
-		$page_size = 4;
-		$count = $m_event->where($where)->count();
+		$page_size = 9;
+		$count = $m_activity->where($where)->count();
 		$total = intval(ceil($count/$page_size));
 		$start = $page_size * ($p - 1);
 		$end = $start + $page_size;
+
+		$limit = $start.' , '.$page_size;
+		$field = 'id, title, cover, crt_ts, view';
+		$info = $m_activity->where($where)->limit($limit)->field($field)->order('crt_ts DESC')->select();
+		foreach ($info as $k => &$v) {
+			$v['crt_ts'] = date('Y-m-d H:i:s', $v['crt_ts']);
+		}
+
+		$result = array('item' => $info, 'current' => $p, 'total' => $total);
+		$this->setSucceeded(true);
+		$this->setResult($result);
+		$this->output();
 	}
+
+	/**
+	 * 获取活动详情
+	 */
+	public function activityDetail() {
+		$id = $_REQUEST['id'];
+		if (empty($id)) {
+			$this->setErrCode(1);
+			$this->setErrMsg('内容不存在');
+			$this->output();
+		}
+
+		$m_activity = M('activity');
+		$where = array('id' => $id);
+		$field = 'title, id, type, cover, content, view, attach, crt_ts';
+		$info = $m_activity->where($where)->field($field)->find();
+		if (empty($info)) {
+			$this->setErrCode(1);
+			$this->setErrMsg('内容不存在');
+			$this->output();
+		} else {
+			$info['content'] = htmlspecialchars($info['content']);
+			$result = array('detail' => $info);
+			$this->setSucceeded(true);
+			$this->setResult($result);
+			$this->output();
+		}
+ 	}
+
+ 	public function search() {
+ 		$keyword = $_REQUEST['keyword'];
+ 		$p = empty($_REQUEST['P']) ? 1 : $_REQUEST['p'];
+ 		if (empty($keyword)) {
+ 			$this->setErrCode(1);
+ 			$this->setErrMsg('请输入关键字');
+ 			$this->output();
+ 		}
+ 		// 分页数据
+ 		$page_size = 20;
+ 		$start = ($p-1) * $page_size;
+ 		$end = $start + $page_size;
+
+ 		// 查询
+ 		$sql = "SELECT id, title, from_tab FROM news as n WHERE title LIKE '%{$keyword}%' UNION SELECT id, title, from_tab FROM `event` as e WHERE title LIKE '%{$keyword}%' UNION SELECT id, title, from_tab FROM activity WHERE title LIKE '%{$keyword}%'";
+ 		$ret = M()->query($sql);
+ 		$count = count($ret);
+ 		$total = intval(ceil($count/$page_size));
+ 		$sql .= " LIMIT {$start}, {$end}";
+ 		$res = M()->query($sql);
+ 		
+ 		$result = array('item' => $res, 'current' => $p, 'total' => $total);
+ 		$this->setSucceeded(true);
+ 		$this->setResult($result);
+ 		$this->output();
+ 	}
 }
