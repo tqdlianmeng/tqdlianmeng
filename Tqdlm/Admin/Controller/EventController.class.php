@@ -73,7 +73,7 @@ class EventController extends CommonController {
 				'content'   => $_POST['content'],
 				'crt_ts'    => time(),
     		);
-    		foreach ($dat as $k => $v) {
+    		foreach ($data as $k => $v) {
     			if(empty($v)) {
     				$this->error('必填选项不能为空');
     			}
@@ -139,7 +139,7 @@ class EventController extends CommonController {
                 'author'    => $_POST['author'],
 				'content'   => $_POST['content']
     		);
-    		foreach ($dat as $k => $v) {
+    		foreach ($data as $k => $v) {
     			if(empty($v)) {
     				$this->error('必填选项不能为空');
     			}
