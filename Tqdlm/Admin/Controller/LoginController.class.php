@@ -21,11 +21,11 @@ class LoginController extends Controller {
             $arr["username"] = $_POST['username'];
             $arr["pwd"] = md5($_POST['pwd']);
 
-            $data = $Dao->where($arr)->field("id,username")->select();
+            $data = $Dao->where($arr)->field("id,username")->find();
             if ($data>0) {
                 
                 $_SESSION['username'] = $arr['username']; 
-                $_SESSION['id'] = $arr['id'];    
+                $_SESSION['id'] = $data['id'];    
                 $this->success("登录成功", U('Admin/News/index'));    
             } else {
                 $this->error('账号或密码错误');   

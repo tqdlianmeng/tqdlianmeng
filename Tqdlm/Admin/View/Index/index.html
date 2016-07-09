@@ -67,10 +67,9 @@
 							<i class="fa fa-angle-down"></i>
 						</a>
 						<ul class="dropdown-menu">
-							<li><a href="#"><i class="fa fa-user"></i> My Profile</a></li>
-							<li><a href="#"><i class="fa fa-cog"></i> Account Settings</a></li>
-							<li><a href="#"><i class="fa fa-eye"></i> Privacy Settings</a></li>
-							<li><a href="{:U('Admin/Login/logout')}" id="log_out"><i class="fa fa-power-off"></i> Log Out</a></li>
+							<li><a href="javascript:;" onclick="$('#table-modal').modal('show');"><i class="fa fa-user"></i>修改管理员密码</a></li>
+							
+							<li><a href="{:U('Admin/Login/logout')}" id="log_out"><i class="fa fa-power-off"></i> 退出登录</a></li>
 						</ul>
 					</li>
 					<!-- END USER LOGIN DROPDOWN -->
@@ -80,7 +79,50 @@
 		
 	</header>
 	<!--/HEADER -->
-	<div class="copyrights">Collect from <a href="http://www.mycodes.net/" >源码之家</a></div>
+	<div class="modal fade in" id="table-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+		<div class="modal-dialog">
+		  	<div class="modal-content modal-table"  >
+				<div class="modal-header">
+				  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				  <h4 class="modal-title">修改管理员密码</h4>
+				</div>
+
+				<div class="modal-body">
+					
+						 <form role="form" class="form-horizontal form-bordered" method="post" action="{:U('Admin/Index/pwdUpdate')}" id="edit_pwd" style="margin-top:15px;">
+						 	<div class="form-group" >
+								<label class="control-label col-md-2" for="old_pwd">原始密码</label>
+								
+								<div class="col-md-9">
+									<input type="password" name="old_pwd" class="form-control" id="old_pwd" >
+								</div>
+						  	</div>
+						  	<div class="form-group" > 
+								<label class="control-label col-md-2" for="new_pwd"> 新 &nbsp;密&nbsp; 码</label>
+								
+								<div class="col-md-9">
+									<input type="password" name="new_pwd" class="form-control" id="new_pwd" >
+								</div>
+						  	</div>
+						  	<div class="form-group" > 
+								<label class="control-label col-md-2" for="repwd">重复密码</label>
+								
+								<div class="col-md-9">
+									<input type="password" name="repwd" class="form-control" id="repwd" >
+								</div>
+						  	</div>
+							<div class="modal-footer">						
+								<button type="submit" class="btn btn-success">确认修改</button>
+							</div>
+						  </div>
+						</form>
+					
+				</div>
+
+				
+		  	</div>
+		</div>
+	</div>
 	<!-- PAGE -->
 	<section id="page">
 				<!-- SIDEBAR -->
@@ -96,7 +138,7 @@
 						<!-- SIDEBAR MENU -->
 						<ul class='sidmenu'>
 							<li class="has-sub">
-								<a href="javascript:;" class="" target="f">
+								<a href="javascript:;" class="">
 									<i class="fa fa-tachometer fa-fw"></i> <span class="menu-text">新闻资讯</span>
 									<span class="arrow"></span>
 								</a>
@@ -114,7 +156,7 @@
 								</ul>
 							</li>
 							<li class="has-sub">
-								<a href="javascript:;" class="" target="f">
+								<a href="javascript:;" class="">
 									<i class="fa fa-bookmark-o fa-fw"></i> <span class="menu-text">赛事资讯</span>
 									<span class="arrow"></span>
 								</a>
@@ -132,7 +174,7 @@
 								</ul>
 							</li>
 							<li class="has-sub">
-								<a class="" href="javascript:;" target="f">
+								<a class="" href="javascript:;">
 									<i class="fa fa-calendar fa-fw"></i> <span class="menu-text">活动资讯</span>
 									<span class="arrow"></span>
 								</a>
@@ -150,7 +192,7 @@
 								</ul>
 							</li>
 							<li class="has-sub">
-								<a class="" href="javascript:;" target="f">
+								<a class="" href="javascript:;">
 									<i class="fa fa-picture-o fa-fw"></i><span class="menu-text">轮播图管理</span>
 									<span class="arrow"></span>
 								</a>
@@ -224,7 +266,35 @@
 		});
 
 		
-		
+		var demo=$("#edit_pwd").Validform({
+            tiptype:3,
+            label:".control-label",
+            showAllError:true,
+            datatype:{
+                "zh1-6":/^[\u4E00-\u9FA5\uf900-\ufa2d]{1,6}$/
+            },
+        
+        });
+    
+    //通过$.Tipmsg扩展默认提示信息;
+    //$.Tipmsg.w["zh1-6"]="请输入1到6个中文字符！";
+    demo.tipmsg.w["zh1-6"]="请输入1到6个中文字符！";
+    
+    demo.addRule([{
+        ele:"#old_pwd",
+        datatype:"*"
+    },
+    {
+        ele:"#new_pwd",
+        datatype:"*",
+        nullmsg:"请填写新密码"
+    },
+    {
+        ele:"#repwd",
+        recheck:"new_pwd",
+        datatype:"*",
+        nullmsg:"重复密码错误"
+    }]);
 	
 	</script>
 	

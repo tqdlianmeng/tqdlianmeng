@@ -9,4 +9,6 @@ return array(
 	'DB_PORT'   => 3306, // 端口
 	'DB_PREFIX' => '', // 数据库表前缀 
 	'DB_CHARSET'=> 'utf8', // 字符集
+	'DEFAULT_CONTROLLER' => 'News', // 默认控制器名称
+	'DEFAULT_ACTION' => 'index', // 默认操作名称
 );
