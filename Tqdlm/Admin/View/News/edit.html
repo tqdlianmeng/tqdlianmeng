@@ -81,10 +81,10 @@
                                                         <label class="control-label col-md-1 col-sm-1">类型：</label>
                                                         <div class="col-md-3 col-sm-3">
                                                             <select class="form-control" name="type" id="type">
-                                                                <option value="0">国际新闻</option>
-                                                                <option value="1">国内新闻</option>
-                                                                <option value="2">中国联盟</option>
-                                                                <option value="3">联盟公告</option>
+                                                                <option value="0" <?php if($info['type'] == '0') echo 'selected'; ?> >国际新闻</option>
+                                                                <option value="1" <?php if($info['type'] == '1') echo 'selected'; ?> >国内新闻</option>
+                                                                <option value="2" <?php if($info['type'] == '2') echo 'selected'; ?> >中国联盟</option>
+                                                                <option value="3" <?php if($info['type'] == '3') echo 'selected'; ?> >联盟公告</option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -229,13 +229,11 @@
             showAllError:true,
             datatype:{
                 "cover": function(gets, obj) {
-                    if (gets != 3) {
-                        var cover = $('#cover').val();
-                        if (cover=='') {
-                            return false;
-                        }
+                    if ($('#type').val() == '3') {
+                        return true;
+                    } else {
+                        return $('#cover').val() != '';
                     }
-                    return true;
                 }
             },
         

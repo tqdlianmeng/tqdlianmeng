@@ -218,13 +218,11 @@
             showAllError:true,
             datatype:{
                 "cover": function(gets, obj) {
-                    if (gets != 3) {
-                        var cover = $('#cover').val();
-                        if (cover=='') {
-                            return false;
-                        }
+                    if ($('#type').val() == '3') {
+                        return true;
+                    } else {
+                        return $('#cover').val() != '';
                     }
-                    return true;
                 }
             },
         
@@ -271,6 +269,7 @@
         if(val == 3){
             $('.cover').addClass('hidden');
             $('#cover').val('');
+            $('#upload').find('img').attr('src', default_img);
             $('.top').find('input[value=0]').prop('checked');
             $('.top').addClass('hidden');
         }else{
