@@ -233,7 +233,49 @@
 	        ue.setContent('{$activity.content}');
 
 		});	
+
+		var demo=$("#add").Validform({
+			tiptype:3,
+			label:".control-label",
+			showAllError:true,
+			datatype:{
+				"zh1-6":/^[\u4E00-\u9FA5\uf900-\ufa2d]{1,6}$/
+			},
+		
+		});
+	
+	//通过$.Tipmsg扩展默认提示信息;
+	//$.Tipmsg.w["zh1-6"]="请输入1到6个中文字符！";
+	demo.tipmsg.w["zh1-6"]="请输入1到6个中文字符！";
+	
+	demo.addRule([{
+		ele:".form-control:eq(0)",
+		datatype:"*"
+	},
+	{
+		ele:".form-control:eq(1)",
+		datatype:"*"	
+	},
+	{
+		ele:"select",
+		datatype:"*",
+		nullmsg:"请选择类型"
+	},
+	{
+		ele:"#cover",
+		datatype:"*",
+		nullmsg:"请选择封面"
+	}]);
+
+	$("#add").submit(function(e){
+	  	if(ue.getContent() == ""){
+	  		alert("请编辑活动内容");
+	  		return false;
+	  	}	  		
+	});
+
 	})
+	
 
 	</script>
 </block>
