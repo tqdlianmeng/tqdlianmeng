@@ -151,8 +151,8 @@
                 var length_sel = datatable.closest('.dataTables_wrapper').find('div[id$=_length] select');
                 length_sel.addClass(' input-sm');
             });
-            $('#slide_table_paginate').find('li.prev').hide();
-            $('#slide_table_paginate').find('li.next').hide();
+            $('#slide_table_paginate').find('li.prev a i').attr('class', 'fa fa-angle-double-left');
+            $('#slide_table_paginate').find('li.next a i').attr('class', 'fa fa-angle-double-right');
 
             // 点击查看
             // $('#slide_table').on('click', '.view', function(){
