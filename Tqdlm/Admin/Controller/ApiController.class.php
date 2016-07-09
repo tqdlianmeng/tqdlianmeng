@@ -20,7 +20,7 @@ class ApiController extends ApiComController {
 
 		$page_size = 5;
 		$m_news = M('news');
-		$where = array('type' => $type, 'is_online' => '1');
+		$where = array('type' => $type, 'is_online' => '1', 'is_top' => '0');
 		$field = 'id, title, cover, type, content, crt_ts, view';
 
 		$count = $m_news->where($where)->count();
@@ -88,7 +88,7 @@ class ApiController extends ApiComController {
 		$info = M('news')->where($where)->field($field)->order('crt_ts DESC')->limit('1')->find();
 		if (!empty($info['content']) && !empty($info['id'])) {
 			$info['crt_ts'] = date('Y-m-d H:i:s', $info['crt_ts']);
-			$info['content'] = mb_substr(strip_tags($v['content']), 0, 60, 'UTF-8');
+			$info['content'] = mb_substr(strip_tags($info['content']), 0, 60, 'UTF-8');
 		}
 
 		$result = array('top' => $info);
