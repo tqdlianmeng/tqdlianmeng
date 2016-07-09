@@ -84,10 +84,12 @@ class ApiController extends ApiComController {
 			$this->output();
 		}
 		$where = array('type' => $type, 'is_top' => '1', 'is_online' => '1');
-		$field = 'id, title, content, crt_ts, view, author';
+		$field = 'id, title, content, cover, crt_ts, view, author';
 		$info = M('news')->where($where)->field($field)->order('crt_ts DESC')->limit('1')->find();
-		$info['crt_ts'] = date('Y-m-d H:i:s', $info['crt_ts']);
-		if (!empty($info['content'])) $info['content'] = htmlspecialchars(strip_tags($v['content']));
+		if (!empty($info['content']) && !empty($info['id'])) {
+			$info['crt_ts'] = date('Y-m-d H:i:s', $info['crt_ts']);
+			$info['content'] = htmlspecialchars(strip_tags($v['content']));
+		}
 
 		$result = array('top' => $info);
 		$this->setSucceeded(true);
@@ -262,7 +264,7 @@ class ApiController extends ApiComController {
 		} else {
 			$info['content'] = htmlspecialchars($info['content']);
 			$m_activity -> where('id='.$id) -> setInc('view');
-			
+
 			$result = array('detail' => $info);
 			$this->setSucceeded(true);
 			$this->setResult($result);
