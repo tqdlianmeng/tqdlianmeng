@@ -12,7 +12,7 @@ class ApiController extends ApiComController {
 		$p = empty($_REQUEST['p']) ? 1 : $_REQUEST['p'];
 		$types = array('0', '1', '2', '3');
 
-		if (empty($type) || !in_array($type, $types)) {
+		if (!in_array($type, $types)) {
 			$this->setErrCode(1);
 			$this->setErrMsg('类型参数有误');
 			$this->output();
