@@ -89,7 +89,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="form-group">
+                                                    <div class="form-group cover">
                                                         <label class="col-md-1 control-label">封面：</label>
                                                         
                                                         <div class="col-md-4">
@@ -105,7 +105,7 @@
                                                         </div>
                                                     </div>
                                                     
-                                                    <div class="form-group">
+                                                    <div class="form-group top">
                                                         <label class="col-md-1 control-label">置顶：</label>
                                                         <div class="col-md-8">
                                                             <label class="radio-inline"><input type="radio" name="is_top" value="1"> 是 </label>
@@ -217,7 +217,15 @@
             label:".control-label",
             showAllError:true,
             datatype:{
-                "zh1-6":/^[\u4E00-\u9FA5\uf900-\ufa2d]{1,6}$/
+                "cover": function(gets, obj) {
+                    if (gets != 3) {
+                        var cover = $('#cover').val();
+                        if (cover=='') {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
             },
         
         });
@@ -241,15 +249,34 @@
     },
     {
         ele:"#cover",
-        datatype:"*",
-        nullmsg:"请选择封面"
+        datatype:"cover",
+        errormsg:"请选择封面"
     }]);
 
+    // 提交是验证内容是否填写
     $("#add").submit(function(e){
         if(ue.getContent() == ""){
-            alert("请编辑活动内容");
+            alert("请编辑内容");
             return false;
         }           
     });
+
+    //联盟公告
+    $('#type').on('change',function(){
+        typeChange();        
+    });
+    typeChange();
+    function typeChange() {
+       var val = $('#type').val();
+        if(val == 3){
+            $('.cover').addClass('hidden');
+            $('#cover').val('');
+            $('.top').find('input[value=0]').prop('checked');
+            $('.top').addClass('hidden');
+        }else{
+            $('.cover').removeClass('hidden');
+            $('.top').removeClass('hidden');
+        } 
+    }
     </script>
 </block>

@@ -87,7 +87,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="form-group">
+                                                    <div class="form-group cover">
                                                         <label class="col-md-1 control-label">封面：</label>
                                                         
                                                         <div class="col-md-4">
@@ -102,7 +102,7 @@
 
                                                     </div>
                                                     
-                                                    <div class="form-group">
+                                                    <div class="form-group top">
                                                         <label class="col-md-1 control-label">置顶：</label>
                                                         <div class="col-md-8">
                                                             <label class="radio-inline"><input type="radio" name="is_top" value="1" <if condition="($info.is_top eq 1)">checked</if> disabled> 是 </label>
@@ -163,6 +163,19 @@
                 ue.setContent('{$info.content}');
                 ue.setDisabled([]);
             })
+            typeChange();
+            function typeChange() {
+               var val = $('#type').val();
+                if(val == 3){
+                    $('.cover').addClass('hidden');
+                    $('#cover').val('');
+                    $('.top').find('input[value=0]').prop('checked');
+                    $('.top').addClass('hidden');
+                }else{
+                    $('.cover').removeClass('hidden');
+                    $('.top').removeClass('hidden');
+                }
+            }
         })
     </script>
 </block>
