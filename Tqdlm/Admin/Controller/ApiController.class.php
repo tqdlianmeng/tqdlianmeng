@@ -306,7 +306,7 @@ class ApiController extends ApiComController {
  	 */
  	public function getIndexTwoNews() {
 		$m_news = M('news');
-		$field = 'title, type, id, crt_ts';
+		$field = 'title, type, id, crt_ts, from_tab';
 		$info = $m_news->where("type <> '3'")->field($field)->limit('0 , 2')->order('crt_ts DESC')->select();
 		foreach ($info as $k => &$v) {
 			$v['crt_ts'] = date('Y-m-d', $v['crt_ts']);
