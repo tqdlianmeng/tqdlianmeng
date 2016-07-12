@@ -337,4 +337,29 @@ class ApiController extends ApiComController {
  		$this->setResult(array('item' => $tmp));
  		$this->output();
  	}
+
+ 	/**
+ 	 * 获取首页联盟公告（以时间排序最多三条）
+ 	 */
+ 	public function getIndexNotice(){
+ 		$field  = 'title, id, type, content, crt_ts';
+ 		$limit  = '0, 3';
+ 		$order  = 'crt_ts DESC';
+
+ 		$notice = M('news');
+ 		$info   = $notice -> where("type = '3'") -> field($field) -> limit($limit) -> order($order) -> select();
+		foreach ($info as $k => &$v) {
+			$v['content'] = mb_substr(strip_tags(strstr($v['content'], '</p>')), 0, 60, 'UTF-8'); 
+			
+			$v['crt_ts'] = date('Y-m-d', $v['crt_ts']);
+		}
+		$result = array('item' => $info);
+
+		$this->setSucceeded(true);
+		$this->setResult($result);
+		$this->output();
+ 	}	
+
+
+
 }
