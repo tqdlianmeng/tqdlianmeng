@@ -32,7 +32,7 @@ class ApiController extends ApiComController {
 			if($v['type'] == '3') {
 				$v['cover'] = '';
 			}
-			$v['content'] = mb_substr(strip_tags($v['content']), 0, 60, 'UTF-8');
+			$v['content'] = mb_substr(strip_tags(str_replace('&nbsp;' ,'' , $v['content'])), 0, 60, 'UTF-8');
 			$v['crt_ts'] = date('Y-m-d H:i:s', $v['crt_ts']);
 		}
 
@@ -88,7 +88,7 @@ class ApiController extends ApiComController {
 		$info = M('news')->where($where)->field($field)->order('crt_ts DESC')->limit('1')->find();
 		if (!empty($info['content']) && !empty($info['id'])) {
 			$info['crt_ts'] = date('Y-m-d H:i:s', $info['crt_ts']);
-			$info['content'] = mb_substr(strip_tags($info['content']), 0, 60, 'UTF-8');
+			$info['content'] = mb_substr(strip_tags(str_replace('&nbsp;' ,'' , $info['content'])), 0, 100, 'UTF-8');
 		}
 
 		$result = array('top' => $info);
@@ -167,7 +167,7 @@ class ApiController extends ApiComController {
 		$field = 'id, title, cover, content, crt_ts, view';
 		$info = $m_event->where($where)->limit($limit)->field($field)->order('crt_ts DESC')->select();
 		foreach ($info as $k => &$v) {
-			if ($v['content']) $v['content'] = mb_substr(strip_tags($v['content']), 0, 60, 'UTF-8');
+			if ($v['content']) $v['content'] = mb_substr(strip_tags(str_replace('&nbsp;' ,'' , $v['content'])), 0, 60, 'UTF-8');
 			$v['crt_ts'] = date('Y-m-d H:i:s', $v['crt_ts']);
 		}
 
@@ -342,7 +342,7 @@ class ApiController extends ApiComController {
  	 * 获取首页联盟公告（以时间排序最多三条）
  	 */
  	public function getIndexNotice(){
- 		$field  = 'title, id, type, content, crt_ts';
+ 		$field  = 'title, id, type, content, from_tab, crt_ts';
  		$limit  = '0, 3';
  		$order  = 'crt_ts DESC';
 
@@ -359,7 +359,5 @@ class ApiController extends ApiComController {
 		$this->setResult($result);
 		$this->output();
  	}	
-
-
 
 }

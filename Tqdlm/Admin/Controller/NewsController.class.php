@@ -182,6 +182,7 @@ class NewsController extends CommonController
             'author'    => $_POST['author'],
             'type'      => $_POST['type'],
             'cover'     => $_POST['type'] == '3' ? '' : $cover,
+            'abstract'  => $_POST['abstract'],
             'content'   => $_POST['content'],
             'is_top'    => $_POST['is_top'],
             'is_online' => $_POST['is_online'],

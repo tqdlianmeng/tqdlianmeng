@@ -95,7 +95,13 @@
 					                                    </a>
 					                                </div>
 					                            </div>
-												
+												<div class="form-group">
+													<label class="control-label col-md-1 col-sm-1" for="fullname">摘要：</label>
+													<div class="col-md-8 col-sm-8">
+				                                        <textarea class="form-control" name="abstract" style="height:200px;" disabled>{$data['abstract']}
+				                                        </textarea>
+													</div>
+												</div>
 												<div class="form-group">
 													<label class="control-label col-md-1 col-sm-1">附件：</label>
 													<div class="col-md-2 col-sm-2">
@@ -106,8 +112,7 @@
 																echo basename($data['attach']);
 															}
 														?>
-													</div>
-													
+													</div>			
 												</div>
 												
 												<div class="form-group">

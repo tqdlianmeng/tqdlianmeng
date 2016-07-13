@@ -71,6 +71,7 @@ class EventController extends CommonController {
 				'title'     => $_POST['title'],
                 'author'    => $_POST['author'],
 				'content'   => $_POST['content'],
+				'abstract'  => $_POST['abstract'],
 				'crt_ts'    => time(),
     		);
     		foreach ($data as $k => $v) {
@@ -137,6 +138,7 @@ class EventController extends CommonController {
 		   	$data = array(
 				'title'     => $_POST['title'],
                 'author'    => $_POST['author'],
+                'abstract'  => $_POST['abstract'],
 				'content'   => $_POST['content']
     		);
     		foreach ($data as $k => $v) {
