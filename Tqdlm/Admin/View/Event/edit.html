@@ -265,12 +265,17 @@
 		datatype:"*"	
 	},
 	{
+		ele:"textarea",
+		datatype:"*",
+		nullmsg:"请输入内容摘要"
+	},
+	{
 		ele:"select",
 		datatype:"*",
 		nullmsg:"请选择类型"
 	}]);
 
-	$("#add").submit(function(e){
+	$("#edit").submit(function(e){
 	  	if(ue.getContent() == ""){
 	  		alert("请编辑活动内容");
 	  		return false;

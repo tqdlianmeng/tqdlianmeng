@@ -227,49 +227,58 @@
             ue.addListener('ready', function(){
                 ue.setContent('{$info.content}');
             });
+
+            var demo=$("#edit").Validform({
+                tiptype:3,
+                label:".control-label",
+                showAllError:true,
+                datatype:{
+                    "cover": function(gets, obj) {
+                        if ($('#type').val() == '3') {
+                            return true;
+                        } else {
+                            return $('#cover').val() != '';
+                        }
+                    }
+                },
+            });
+    
+            //通过$.Tipmsg扩展默认提示信息;
+            //$.Tipmsg.w["zh1-6"]="请输入1到6个中文字符！";
+            demo.tipmsg.w["zh1-6"]="请输入1到6个中文字符！";
+            
+            demo.addRule([{
+                ele:".form-control:eq(0)",
+                datatype:"*"
+            },
+            {
+                ele:".form-control:eq(1)",
+                datatype:"*"    
+            },
+            {
+                ele:"textarea",
+                datatype:"*",
+                nullmsg:"请输入内容摘要"
+            },
+            {
+                ele:"select",
+                datatype:"*",
+                nullmsg:"请选择类型"
+            }]);
+
+            // 提交表单时
+            $("#edit").submit(function(e){
+                if(ue.getContent() == ""){
+                    alert("请编辑内容");
+                    return false;
+                }           
+            });
+
         })
 
-        var demo=$("#edit").Validform({
-            tiptype:3,
-            label:".control-label",
-            showAllError:true,
-            datatype:{
-                "cover": function(gets, obj) {
-                    if ($('#type').val() == '3') {
-                        return true;
-                    } else {
-                        return $('#cover').val() != '';
-                    }
-                }
-            },
         
-        });
     
-    //通过$.Tipmsg扩展默认提示信息;
-    //$.Tipmsg.w["zh1-6"]="请输入1到6个中文字符！";
-    demo.tipmsg.w["zh1-6"]="请输入1到6个中文字符！";
     
-    demo.addRule([{
-        ele:".form-control:eq(0)",
-        datatype:"*"
-    },
-    {
-        ele:".form-control:eq(1)",
-        datatype:"*"    
-    },
-    {
-        ele:"select",
-        datatype:"*",
-        nullmsg:"请选择类型"
-    }]);
-
-    // 提交表单时
-    $("#add").submit(function(e){
-        if(ue.getContent() == ""){
-            alert("请编辑内容");
-            return false;
-        }           
-    });
 
      //联盟公告
     $('#type').on('change',function(){
