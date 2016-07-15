@@ -146,26 +146,26 @@ class EventController extends CommonController {
     				$this->error('必填选项不能为空');
     			}
     		}
+    		if(!empty($_FILES['cover']['name']) || !empty($_FILES['attach']['name'])){
+	            $data['is_online'] = $_POST['is_online'];
+	            $data['type']      = $_POST['type'];
+	    		$upload = new \Think\Upload();// 实例化上传类
+				$upload->maxSize  = 3145728 ;// 设置附件上传大小
+				$upload->exts     = array('jpg', 'png', 'jpeg', 'zip', 'rar');// 设置附件上传类型
+				$upload->rootPath = './Public/Uploads/'; // 设置附件上传根目录
+				$upload->savePath = 'event/'; // 设置附件上传（子）目录
+			    // 上传文件 
+			    $info = $upload->upload();
+		    	$url = 'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['SCRIPT_NAME']);
 
-            $data['is_online'] = $_POST['is_online'];
-            $data['type']      = $_POST['type'];
-    		$upload = new \Think\Upload();// 实例化上传类
-			$upload->maxSize  = 3145728 ;// 设置附件上传大小
-			$upload->exts     = array('jpg', 'png', 'jpeg', 'zip', 'rar');// 设置附件上传类型
-			$upload->rootPath = './Public/Uploads/'; // 设置附件上传根目录
-			$upload->savePath = 'event/'; // 设置附件上传（子）目录
-		    // 上传文件 
-		    $info = $upload->upload();
-	    	$url = 'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['SCRIPT_NAME']);
+			   	if(!empty($info['cover'])) {
+			   		$data['cover'] = $url.'/Public/Uploads/'.$info['cover']['savepath'].$info['cover']['savename'];
+			   	}
 
-		   	if(!empty($info['cover'])) {
-		   		$data['cover'] = $url.'/Public/Uploads/'.$info['cover']['savepath'].$info['cover']['savename'];
-		   	}
-
-		   	if (!empty($info['attach'])) {
-		   		$data['attach'] = $url.'/Public/Uploads/'.$info['attach']['savepath'].$info['attach']['savename'];
-		   	}
-
+			   	if (!empty($info['attach'])) {
+			   		$data['attach'] = $url.'/Public/Uploads/'.$info['attach']['savepath'].$info['attach']['savename'];
+			   	}
+			}
 		   	$res= M('event')->where('id='.I('post.id'))->save($data);
 		   	if ($res) {
 		   		$this->success('修改成功', U('Admin/Event/index'));

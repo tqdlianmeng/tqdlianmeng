@@ -155,16 +155,16 @@
             $('#slide_table_paginate').find('li.next a i').attr('class', 'fa fa-angle-double-right');
 
             // 点击查看
-            // $('#slide_table').on('click', '.view', function(){
-            //     var id = $(this).attr('data-id');
-            //     window.location.href = "__MODULE__/Slide/view/id/"+id;
-            // });
+            $('#slide_table').on('click', '.view', function(){
+                var id = $(this).attr('data-id');
+                window.location.href = "__MODULE__/Slide/view/id/"+id;
+            });
 
             // 点击编辑
-            // $('#slide_table').on('click', '.edit', function(){
-            //     var id = $(this).attr('data-id');
-            //     window.location.href = "__MODULE__/Slide/edit/id/"+id;
-            // });
+            $('#slide_table').on('click', '.edit', function(){
+                var id = $(this).attr('data-id');
+                window.location.href = "__MODULE__/Slide/edit/id/"+id;
+            });
 
             // 点击删除
             $('#slide_table').on('click', '.del', function(){

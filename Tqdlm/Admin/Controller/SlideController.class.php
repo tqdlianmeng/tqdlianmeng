@@ -33,7 +33,7 @@ class SlideController extends CommonController{
             $sql.=" ORDER BY ". $columns[$requestData['order'][0]['column']]." ".$requestData['order'][0]['dir']."  LIMIT ".$requestData['start']." ,".$requestData['length']."   ";
             $res = $m_act->query($sql);
 
-            $types = array('1' => '国际赛事轮播图', '2' => '国内赛事轮播图');
+            $types = array('1' => '国际赛事轮播图', '2' => '国内赛事轮播图', '3' => '首页顶部轮播图', '4' => '首页中部轮播图', '5' => '首页底部轮播图');
             $online = array('1' => '是', '2' =>'否');
             $data = array();
             foreach( $res as $k => $v ) {
@@ -106,6 +106,7 @@ class SlideController extends CommonController{
                 }              
             }
 
+            $data['link_url'] = !empty($_POST['link_url']) ? $_POST['link_url'] : "";
         	$res = $Slide -> add($data);
 
         	if($res){
@@ -137,9 +138,9 @@ class SlideController extends CommonController{
     public function edit(){
         $M = M("slide");
         $slide = $M->where("id=" . (int)$_GET['id'])->find();
-        // var_dump($activity);die();
+        // var_dump($slide);die();
         
-        if ($slide['id'] == '') {
+        if($slide['id'] == ""){
             $this->error("该图片不存在");
         }
 
@@ -151,17 +152,27 @@ class SlideController extends CommonController{
     public function update(){
 
         if (IS_POST) {
+
             $list = M("slide");
+            $data = array(
+                'title'     => $_POST['title'],                    
+                'type'      => $_POST['type'],                    
+                'is_online' => $_POST['is_online']
+            );       
             
-            if(!empty($_POST['img'])){
-            
+            foreach($data as $key => $val){
+                if(empty($val)){
+                    $this -> error("必填选项不能为空");
+                }
+            }
+
+            if(!empty($_FILES['img']['name'])){
                 $upload = new \Think\Upload();// 实例化上传类
                 $upload->maxSize  = 3145728 ;// 设置附件上传大小
                 $upload->exts     = array('jpg', 'png', 'jpeg');// 设置附件上传类型
                 $upload->rootPath = './Public/Uploads/'; // 设置附件上传根目录
                 $upload->savePath = 'slide/'; // 设置附件上传（子）目录
 
-                
             // 上传文件 
                 $info = $upload->upload();
             
@@ -170,29 +181,10 @@ class SlideController extends CommonController{
                 if(!empty($info['img'])) {
                     $data_url['img'] = $url.'/Public/Uploads/'.$info['img']['savepath'].$info['img']['savename'];
                 }
-                
-                $data = array(
-                    'title'     => $_POST['title'],                    
-                    'type'      => $_POST['type'],                    
-                    'is_online' => $_POST['is_online'],                                   
-                    'img'       => $data_url['img']
-                );
-            } else {
-
-                $data = array(
-                    'title'     => $_POST['title'],                    
-                    'type'      => $_POST['type'],                    
-                    'is_online' => $_POST['is_online'],                                         
-                );           
             }
 
-            foreach($data as $key => $val){
-                if(empty($val)){
-                    $this -> error("必填选项不能为空");
-                }
-            }
-
-            $res = $list->where('id='.(int)$_POST['act_id'])->save($data);
+            $data['link_url'] = !empty($_POST['link_url']) ? $_POST['link_url'] : "";
+            $res = $list->where('id='.(int)$_POST['slide_id'])->save($data);
 
             if($res){
                 $this -> success("修改成功", U('Admin/Slide/index'));
@@ -200,5 +192,18 @@ class SlideController extends CommonController{
                 $this -> error("修改失败");
             }
         }
+    }
+
+    //点击查看
+    public function view() {
+        $id = I('get.id');
+        if (empty($id)) {
+            $this->redirect('Slide/index');
+        }
+        $sli = M('slide');
+        $slide = $sli->where('id='.$id)->find();
+
+        $this->assign('slide', $slide);
+        $this->display();
     }
 }
