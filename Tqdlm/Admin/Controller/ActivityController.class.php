@@ -17,7 +17,7 @@ class ActivityController extends CommonController {
             );
 
             // 获取所有记录数
-            $sql = "SELECT title, type, view, is_online, mod_ts, id ";
+            $sql = "SELECT id ";
             $sql.=" FROM Activity";
             $total = count($m_act->query($sql));
             $totalFiltered = $total;
@@ -84,7 +84,7 @@ class ActivityController extends CommonController {
         // var_dump($_FILES);
         // echo  "</pre>";
     	$Act = M('activity');
-
+        
         if (IS_POST) {
             $test = $Act -> where(array('title'=>$_POST['title'])) -> select();
 
@@ -179,7 +179,7 @@ class ActivityController extends CommonController {
         // echo  "</pre>";die;
         if (IS_POST) {
             $list = M("activity");
-             $data = array(
+            $data = array(
                 'title'     => $_POST['title'],
                 'author'    => $_POST['author'],
                 'content'   => $_POST['content']                    

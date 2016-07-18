@@ -24,8 +24,8 @@ class NewsController extends CommonController
             );
 
             // 获取所有记录数
-            $sql = "SELECT title, type, view, is_online, is_top, mod_ts, id ";
-            $sql.=" FROM news";
+            $sql = "SELECT id ";
+            $sql.= " FROM news";
             $total = count($m_news->query($sql));
             $totalFiltered = $total;
 

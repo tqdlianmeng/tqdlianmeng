@@ -16,7 +16,7 @@ class EventController extends CommonController {
 			);
 
 			// 获取所有记录数
-			$sql = "SELECT title, type, view, is_online, mod_ts, id ";
+			$sql = "SELECT id ";
 			$sql.=" FROM event";
 			$total = count($m_event->query($sql));
 			$totalFiltered = $total;
@@ -146,9 +146,10 @@ class EventController extends CommonController {
     				$this->error('必填选项不能为空');
     			}
     		}
+    		$data['is_online'] = $_POST['is_online'];
+	        $data['type']      = $_POST['type'];
     		if(!empty($_FILES['cover']['name']) || !empty($_FILES['attach']['name'])){
-	            $data['is_online'] = $_POST['is_online'];
-	            $data['type']      = $_POST['type'];
+	            
 	    		$upload = new \Think\Upload();// 实例化上传类
 				$upload->maxSize  = 3145728 ;// 设置附件上传大小
 				$upload->exts     = array('jpg', 'png', 'jpeg', 'zip', 'rar');// 设置附件上传类型
