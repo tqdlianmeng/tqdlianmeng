@@ -65,6 +65,7 @@ class ActivityController extends CommonController {
 
     //点击查看
     public function view() {
+        
         $id = I('get.id');
         if (empty($id)) {
             $this->redirect('Activity/index');
@@ -149,14 +150,15 @@ class ActivityController extends CommonController {
         
         $res = $Act->where('id='.intval($id))->delete();
         if ($res) {
-            $result = array('is_ok' => true);
+            $result = array('is_ok' => true);            
         } else {
-            $result = array('is_ok' => false);
+            $result = array('is_ok' => false);            
         }
-        echo json_encode($result);exit;
+        // echo json_encode($result);exit;
+        $this->ajaxReturn($result);
     }
 
-
+    
     public function edit(){
         $M = M("activity");
         $activity = $M->where("id=" . (int)$_GET['id'])->find();
