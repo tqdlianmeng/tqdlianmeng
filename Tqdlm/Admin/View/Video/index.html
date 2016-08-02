@@ -3,7 +3,11 @@
 <block name="css">
 <link rel="stylesheet" type="text/css" href="__PUBLIC__/Admin/js/datatables/media/css/jquery.dataTables.min.css" />
 <link rel="stylesheet" type="text/css" href="__PUBLIC__/Admin/js/datatables/media/assets/css/datatables.min.css" />
-
+<style>
+    #video_table td{
+        vertical-align:middle;
+    }
+</style>
 </block>
 
 <block name="content">
@@ -41,9 +45,9 @@
 						<ul class="breadcrumb">
 							<li>
 								<i class="fa fa-home"></i>
-								<a href="index.html">赛事资讯</a>
+								<a href="index.html">视频管理</a>
 							</li>
-							<li>赛事资讯列表</li>
+							<li>视频管理列表</li>
 						</ul>
 						<!-- /BREADCRUMBS -->
 					</div>
@@ -58,15 +62,15 @@
 							<!-- BOX -->
 								<div class="box border inverse">
 									<div class="box-title">
-										<h4><i class="fa fa-table"></i>赛事资讯列表</h4>
+										<h4><i class="fa fa-table"></i>视频列表</h4>
 									</div>
 									<div class="box-body">
-										<table id="event_table" cellpadding="0" cellspacing="0" border="0" class="datatable table table-striped table-bordered table-hover">
+										<table id="video_table" cellpadding="0" cellspacing="0" border="0" class="datatable table table-striped table-bordered table-hover">
 											<thead>
 												<tr>
 													<th>标题</th>
 													<th>类型</th>
-													<th class="hidden-xs">浏览人数</th>
+													<th>封面</th>
 													<th>是否显示</th>
 													<th class="hidden-xs">修改时间</th>
 													<th class="hidden-xs">操作</th>
@@ -80,7 +84,7 @@
 					</div>
 				</div>
 			</div>
-		   <!-- /DASHBOARD CONTENT -->
+		    <!-- /DASHBOARD CONTENT -->
 		  
 			<!-- /CALENDAR & CHAT -->
 			<div class="footer-tools">
@@ -93,6 +97,7 @@
 		
 	</div>
 </div>
+
 </block>
 
 <block name="js">
@@ -102,11 +107,11 @@
 	<script type="text/javascript">
 		$(function(){
 
-			var oTable1 = $('#event_table').dataTable( {
+			var oTable1 = $('#video_table').dataTable( {
 				"processing": true,
         		"serverSide": true,
         		"ajax": {
-        			'url': "{:U('Admin/Event/index')}",
+        			'url': "{:U('Admin/Video/index')}",
         		},
         		"columnDefs": [{
 	                 orderable:false,          //禁用排序
@@ -149,28 +154,28 @@
 				var length_sel = datatable.closest('.dataTables_wrapper').find('div[id$=_length] select');
 				length_sel.addClass(' input-sm');
 			});
-			$('#event_table_paginate').find('li.prev a i').attr('class', 'fa fa-angle-double-left');
-            $('#event_table_paginate').find('li.next a i').attr('class', 'fa fa-angle-double-right');
+			$('#video_table_paginate').find('li.prev a i').attr('class', 'fa fa-angle-double-left');
+            $('#video_table_paginate').find('li.next a i').attr('class', 'fa fa-angle-double-right');
 
 			// 点击查看
-			$('#event_table').on('click', '.view', function(){
+			$('#video_table').on('click', '.view', function(){
 				var id = $(this).attr('data-id');
-				window.location.href = "__MODULE__/Event/view/id/"+id;
+				window.location.href = "__MODULE__/Video/view/id/"+id;
 			});
 
 			// 点击编辑
-			$('#event_table').on('click', '.edit', function(){
+			$('#video_table').on('click', '.edit', function(){
 				var id = $(this).attr('data-id');
-				window.location.href = "__MODULE__/Event/edit/id/"+id;
+				window.location.href = "__MODULE__/Video/edit/id/"+id;
 			});
 
 			// 点击删除
-			$('#event_table').on('click', '.del', function(){
+			$('#video_table').on('click', '.del', function(){
 				if(!confirm('确定删除？')) return false;
 				
 				var id = $(this).attr('data-id');
 				$.ajax({
-					url:"{:U('Admin/Event/delete')}",
+					url:"{:U('Admin/Video/del')}",
 					data:{id:id},
 					type:'post',
 					async:false,
