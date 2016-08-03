@@ -31,7 +31,7 @@ class VideoController extends CommonController {
             $sql.=" ORDER BY ". $columns[$requestData['order'][0]['column']]." ".$requestData['order'][0]['dir']."  LIMIT ".$requestData['start']." ,".$requestData['length']."   ";
             $res = $m_act->query($sql);
 
-            $types = array('宣传视频', '教学视频', '格斗视频');
+            $types = array(1 => '宣传视频', 2 => '教学视频', 3 => '格斗视频');
             $online = array('F' => '否', 'T' => '是');
             $data = array();
             foreach( $res as $k => $v ) {
@@ -69,10 +69,10 @@ class VideoController extends CommonController {
         if (empty($id)) {
             $this->redirect('Video/index');
         }
-        $m_event = M('Video');
-        $data = $m_event->where('id='.$id)->select();
+        $video = M('Video');
+        $data = $video->where('id='.$id)->find();
 
-        $this->assign('data', $data[0]);
+        $this->assign('data', $data);
         $this->display();
     }
 

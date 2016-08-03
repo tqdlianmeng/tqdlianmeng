@@ -1,6 +1,8 @@
 <!-- 继承Index/index里的内容 -->
 <extend name="Index/index" /> 
 
+
+
 <block name="content">
 <!-- SAMPLE BOX CONFIGURATION MODAL FORM-->
 <div class="modal fade" id="box-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -58,30 +60,57 @@
 									</div>
 								</div>
 								<div class="box-body">
-										<div class="form-group">
-											<label class="control-label col-md-1 col-sm-1">视频上传：</label>
-											<div class="resumable-drop" ondragenter="jQuery(this).addClass('resumable-dragover');" ondragend="jQuery(this).removeClass('resumable-dragover');" ondrop="jQuery(this).removeClass('resumable-dragover');">
-        									拖拽文件到这里或者<a class="resumable-browse"><u>点击这里选择文件</u></a>
-											
-											<button id="start">开始/继续</button>
-											
-											<button id="stop">暂停</button>
-											
-											<ul id="list"></ul>
-											<table>
-												<tr>
-													<td>Uploading</td>
-													<td class="name">文件名</td>
-													<td class="progress">上传进度</td>
-												</tr>
-
-											</table>
-											</div>
-
-										</div>
+										
 									<form id="add" action="{:U('Admin/Video/add')}" class="form-horizontal form-bordered"  method="post" enctype="multipart/form-data">
 										<div class="panel-body panel-form">
 											<div class="col-md-12">
+				
+												<div class="form-group">
+													<label class="control-label col-md-1 col-sm-1">视频上传：</label>
+													<div class="resumable-drop" ondragenter="jQuery(this).addClass('resumable-dragover');" ondragend="jQuery(this).removeClass('resumable-dragover');" ondrop="jQuery(this).removeClass('resumable-dragover');">
+			        									<a class="resumable-browse"><u class="btn btn-pink" style="text-decoration:none;">点击这里选择视频文件</u></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													
+														<a class="btn btn-primary m-r-15" id="start">开始/继续</a>
+														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+														<a class="btn btn-primary m-r-15" id="stop">暂停</a>
+														
+														<ul id="list"></ul>
+
+														
+													</div>
+							                        
+													
+												</div>
+												<div class="form-group">
+													<table class="table table-bordered" id="uploadTable">
+															<tbody>
+																<tr>
+																	<td style="width:15%; ">文 &nbsp;件&nbsp; 名 :</td>
+																	<td></td>
+																</tr>
+																<tr>																	
+																	<td style="width:15%; ">上传进度 :</td>
+																	<td>
+																		<div class="col-md-4" style="width:100%;">
+																			<div class="progress progress-striped active" style="margin-top:5%;">
+																			  <div class="progress-bar" id="progress_bar" role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+																			  </div>
+																			</div>
+																		</div>
+																	</td>
+																	<td style="width:15%;">
+																		<div class="btn btn-primary m-r-15" id="progress_p" style="background:#a8bc7b; border:none; width:100%;">0 %</div>
+																	</td>
+																</tr>
+															</tbody>
+													</table>
+													<style>
+														#uploadTable{border:none; width:40%; margin-left:8%;}
+
+														#uploadTable td{border:none; vertical-align:middle;}
+													</style>
+												</div>
+
 												<div class="form-group">
 													<label class="control-label col-md-1 col-sm-1" for="fullname">标题：</label>
 													<div class="col-md-8 col-sm-8">
@@ -173,19 +202,22 @@
 	r.assignBrowse($('.resumable-browse')[0]);
 
 	r.on('fileAdded', function(file){
-		var tr = $($('table tr')[0]).clone(true);
-		tr.addClass('file-'+file.uniqueIdentifier);
+		var tr = $($('table tr')[0]);
+		// tr.addClass('file-'+file.uniqueIdentifier);
 		$(tr.find('td')[1]).html(file.fileName);
-		$(tr.find('td')[2]).html(0+'%');
-		$('table').append(tr);
+		// $(tr.find('td')[2]).html(0+'%');
+		// $('table').append(tr);
 	});
 
 	r.on('fileProgress', function(file){
-		$('.file-'+file.uniqueIdentifier+ ' .progress').html(Math.floor(file.progress()*100) + '%');
+		// $('.file-'+file.uniqueIdentifier+ ' .progress').html(Math.floor(file.progress()*100) + '%');
+		var progress = file.progress()*100;
+		$('#progress_bar').css("width", progress.toFixed(2)+"%");
+    	$("#progress_p").html(progress.toFixed(2)+"%");
 	});
 
 	r.on('fileSuccess', function(file, message){
-		$('.file-'+file.uniqueIdentifier+ ' .progress').html('<span style="color:green">已完成</span>');
+		$('#progress_p').html('已完成');
 		console.log(message);
 		var res = eval('('+message+')');
 		$('#video_path').val("__PUBLIC__/Uploads/Video_uploads/"+res.path);
@@ -279,6 +311,10 @@
 
 
 		})
+
+		var progress = file.progress()*100;
+		$('#progress_bar').css("width", progress.toFixed(2)+"%");
+    	$("#progress_bar").html(progress.toFixed(2)+"%");
 
 	</script>
 </block>

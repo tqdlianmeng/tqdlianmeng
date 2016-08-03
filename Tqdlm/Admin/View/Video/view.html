@@ -36,9 +36,9 @@
 						<ul class="breadcrumb">
 							<li>
 								<i class="fa fa-home"></i>
-								<a href="index.html">活动资讯</a>
+								<a href="index.html">视频管理</a>
 							</li>
-							<li>查看活动资讯</li>
+							<li>查看视频详情</li>
 						</ul>
 						<!-- /BREADCRUMBS -->
 					</div>
@@ -52,7 +52,7 @@
 						<div class="col-md-12">
 							<div class="box border inverse">
 								<div class="box-title">
-									<h4><i class="fa fa-bars"></i>活动资讯内容</h4>
+									<h4><i class="fa fa-bars"></i>视频详情</h4>
 									<div class="tools">
 										
 									</div>
@@ -64,31 +64,33 @@
 												<div class="form-group">
 													<label class="control-label col-md-1 col-sm-1" for="fullname">标题：</label>
 													<div class="col-md-8 col-sm-8">
-				                                        <input class="form-control" type="text" value="{$data['title']}"  disabled name="title" id="name" placeholder='活动资讯标题'>
+				                                        <input class="form-control" type="text" value="{$data['title']}"  disabled name="title" id="name" placeholder='视频相关标题'>
 													</div>
 												</div>
-												<div class="form-group">
-													<label class="control-label col-md-1 col-sm-1" for="fullname">作者：</label>
-													<div class="col-md-8 col-sm-8">
-				                                        <input class="form-control" type="text" value="{$data['author']}"  disabled name="title" id="name" placeholder='发布者' >
-													</div>
-												</div>
+												
 												<div class="form-group">
 													<label class="control-label col-md-1 col-sm-1">类型：</label>
 													<div class="col-md-3 col-sm-3">
 				                                        <select class="form-control" id="type" name="type" disabled>
-															<option <?php if ($data['type'] == 2) {echo 'selected';} ?> value="2">国际活动</option>
-															<option <?php if ($data['type'] == 3) {echo 'selected';} ?> value="3">中国联盟活动</option>
-															<option <?php if ($data['type'] == 4) {echo 'selected';} ?> value="4">分区协会活动</option>
-															<option <?php if ($data['type'] == 5) {echo 'selected';} ?> value="5">省级协会活动</option>
-															<option <?php if ($data['type'] == 1) {echo 'selected';} ?> value="1">国际、国内会议</option>
-															<option <?php if ($data['type'] == 0) {echo 'selected';} ?> value="0">国际、国内讲习</option>
+															<option value="">请选择</option>
+															<option  <if condition="$data.type eq 1"> selected="selected"</if> value="1">宣传视频</option>
+															<option  <if condition="$data.type eq 2"> selected="selected"</if> value="2">教学视频</option>
+															<option <if condition="$data.type eq 3"> selected="selected"</if> value="3">格斗视频</option>
 														</select>
 													</div>
 												</div>
 
 												<div class="form-group">
-					                                <label class="col-md-1 control-label">封面：</label>
+													<label class="col-md-1 control-label">视频：</label> 
+													<div class="col-md-4">
+					                                    <video src="{$data['video_url']}" controls="controls" width="120%">
+														您的浏览器不支持 video 标签。
+														</video>
+					                                </div>
+												</div>
+
+												<div class="form-group">
+					                                <label class="col-md-1 control-label">视频封面：</label>
 					                                
 					                                <div class="col-md-4">
 					                                    <img src="" alt="" id="cover_box" style="display:none">
@@ -99,34 +101,13 @@
 					                                    	<img src="<?php echo $src; ?>" width="250px" alt="" id="cover_prev">
 					                                    </a>
 					                                </div>
-					                            </div>
+					                            </div>								
 												
 												<div class="form-group">
-													<label class="control-label col-md-1 col-sm-1">附件：</label>
-													<div class="col-md-2 col-sm-2">
-														<?php 
-															if(empty($data['attach'])) {
-																echo '无';
-															} else {
-																echo basename($data['attach']);
-															}
-														?>
-													</div>
-													
-												</div>
-												
-												<div class="form-group">
-													<label class="col-md-1 control-label">发布：</label> 
+													<label class="col-md-1 control-label">是否展示：</label> 
 													<div class="col-md-8"> 
-														<label class="radio-inline"> <input type="radio" class="uniform" <?php if ($data['is_online'] == 1) {echo 'checked';} ?>  name="is_online" value="1" disabled> 是 </label> 
-														<label class="radio-inline"> <input type="radio" class="uniform" <?php if ($data['is_online'] == 0) {echo 'checked';} ?>  name="is_online" value="0" disabled> 否 </label>
-													</div>
-												 </div>
-
-												<div class="form-group" >
-													<label class="control-label col-md-1 col-sm-1">内容：</label>
-													<div class="col-md-11 col-sm-11">
-														<script type="text/plain" id="container" name="content"></script>
+														<label class="radio-inline"> <input type="radio" class="uniform" <?php if ($data['is_online'] == 'T') {echo 'checked';} ?>  name="is_online" value="1" disabled> 是 </label> 
+														<label class="radio-inline"> <input type="radio" class="uniform" <?php if ($data['is_online'] == 'F') {echo 'checked';} ?>  name="is_online" value="0" disabled> 否 </label>
 													</div>
 												</div>
 
