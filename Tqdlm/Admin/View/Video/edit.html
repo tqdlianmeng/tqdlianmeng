@@ -58,13 +58,13 @@
 									</div>
 								</div>
 								<div class="box-body">
-									<form id="add" action="{:U('Admin/Video/add')}" class="form-horizontal form-bordered"  method="post" enctype="multipart/form-data">
+									<form id="add" action="{:U('Admin/Video/update')}" class="form-horizontal form-bordered"  method="post" enctype="multipart/form-data">
 										<div class="panel-body panel-form">
 											<div class="col-md-12">
 												<div class="form-group">
 													<label class="control-label col-md-1 col-sm-1" for="fullname">标题：</label>
 													<div class="col-md-8 col-sm-8">
-				                                        <input class="form-control" type="text"  name="title" id="name" placeholder='视频标题' >
+				                                        <input class="form-control" type="text"  name="title" id="name" placeholder='视频标题' value="{$res['title']}">
 													</div>
 												</div>
 
@@ -73,8 +73,9 @@
 													<div class="col-md-3 col-sm-3">
 				                                        <select class="form-control" id="type" name="type" >
 															<option value="" selected>请选择</option>
-															<option value="2">国际活动</option>
-															<option value="3">中国联盟活动</option>
+															<option  <if condition="$res.type eq 1"> selected="selected"</if> value="1">宣传视频</option>
+															<option  <if condition="$res.type eq 2"> selected="selected"</if> value="2">教学视频</option>
+															<option <if condition="$res.type eq 3"> selected="selected"</if> value="3">格斗视频</option>
 														</select>
 													</div>
 												</div>
@@ -85,7 +86,10 @@
 					                                <div class="col-md-4">
 					                                    <img src="" alt="" id="cover_box" style="display:none">
 					                                    <a id="upload">
-					                                    	<img src="__PUBLIC__/Admin/img/default-thumbnail.png" width="250px" alt="" id="cover_prev">
+					                                    	<?php 
+						                                    	$src = empty($res['cover']) ? '__PUBLIC__/Admin/img/default-thumbnail.png' : $res['cover'];
+						                                    ?>
+					                                    	<img src="<?php echo $src; ?>" width="250px" alt="" id="cover_prev">
 					                                    </a>
 					                                </div>
 
@@ -94,30 +98,19 @@
 					                                    <input type="file" name="cover" id="cover" class="hidden label" />
 					                                </div>
 					                            </div>
-												
-												<div class="form-group">
-													<label class="control-label col-md-1 col-sm-1">视频文件：</label>
-													<div class="col-md-2 col-sm-2">
-														<button type="button" class="btn btn-primary" id="attach_file">选择文件</button>
-				                                        <input type="file" id="attach" name="attach" class="hidden">
-													</div>
-													<div class="col-md-7 col-sm-7">
-														<h5 id="attach_name"></h5>
-													</div>
-												</div>
-
+												<input type="hidden" name="video_id" value="{$res.id}">
 												<div class="form-group">
 													<label class="col-md-1 control-label">是否展示：</label> 
 													<div class="col-md-8"> 
-														<label class="radio-inline"> <input type="radio" class="uniform" checked name="is_online" value="1"> 是 </label> 
-														<label class="radio-inline"> <input type="radio" class="uniform" name="is_online" value="0" checked=""> 否 </label>
+														<label class="radio-inline"> <input type="radio" class="uniform" name="is_online" <if condition="$res.is_online eq T"> checked="checked"</if> value="T"> 是 </label> 
+														<label class="radio-inline"> <input type="radio" class="uniform" name="is_online" <if condition="$res.is_online eq F"> checked="checked"</if> value="F"> 否 </label>
 													</div>
 												</div>
 
 												<div class="form-group" style="margin-top:20px;">
 													<div class="col-md-9 col-sm-9 text-right" style="border:none;">
 														<button type="reset" class="btn btn-primary m-r-15">重置</button>
-														<button type="submit" class="btn btn-primary m-r-15">添加</button>
+														<button type="submit" class="btn btn-primary m-r-15">修改</button>
 													</div>
 												</div>
 

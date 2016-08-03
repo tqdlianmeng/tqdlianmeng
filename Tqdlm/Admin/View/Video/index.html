@@ -171,7 +171,7 @@
 
 			// 点击删除
 			$('#video_table').on('click', '.del', function(){
-				if(!confirm('确定删除？')) return false;
+				if(!confirm('确定删除该记录及视频？')) return false;
 				
 				var id = $(this).attr('data-id');
 				$.ajax({

@@ -20,6 +20,9 @@ define('APP_DEBUG',True);
 // 定义应用目录
 define('APP_PATH','./Tqdlm/');
 
+// 定义删除路径常量
+define('MY_ROOT', dirname(__FILE__));
+
 // 引入ThinkPHP入口文件
 require './ThinkPHP/ThinkPHP.php';
 

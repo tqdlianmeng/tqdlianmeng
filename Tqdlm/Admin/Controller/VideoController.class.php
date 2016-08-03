@@ -141,31 +141,57 @@ class VideoController extends CommonController {
 
     public function del(){
 
-    	$Act = M('activity');
+    	$Act = M('Video');
 
     	$id = $_POST['id'];
-        
-        $res = $Act->where('id='.intval($id))->delete();
-        if ($res) {
-            $result = array('is_ok' => true);            
-        } else {
-            $result = array('is_ok' => false);            
+        $delDir = $Act -> field('cover, video_url') -> where('id='.intval($id)) -> find();
+        if($delDir){
+            $videoName = basename($delDir['video_url']);
+            $coverName = basename($delDir['cover']);
+            $coverDatePath = substr(dirname($delDir['cover']), -10);
+            $coverDir = MY_ROOT.'/Public/Uploads/video/'.$coverDatePath;
+            $path_arr = array(
+                        "0" => MY_ROOT.'/Public/Uploads/Video_uploads/'.$videoName,
+                        "1" => $coverDir.'/'.$coverName
+                        );
+            $int = 0;
+            for($x=0; $x<count($path_arr); $x++){
+                if(unlink($path_arr[$x])){
+                    $int += 1;                    
+                }else{
+                    $result = array('is_ok' => false);
+                }
+            }
+
+            $dirAllFile = count(scandir($coverDir))-2;
+            if($dirAllFile == 0){
+                if(is_dir($coverDir)){
+                    rmdir($coverDir);                   
+                }
+            }
+            
+            if($int == 2){
+                $res = $Act->where('id='.intval($id))->delete();
+                if ($res) {
+                    $result = array('is_ok' => true);            
+                } else {
+                    $result = array('is_ok' => false);            
+                }
+            }
+            $this->ajaxReturn($result);
         }
-        // echo json_encode($result);exit;
-        $this->ajaxReturn($result);
     }
 
     
     public function edit(){
-        $M = M("activity");
-        $activity = $M->where("id=" . (int)$_GET['id'])->find();
-        // var_dump($activity);die();
+        $M = M("Video");
+        $video = $M->where("id=" . (int)$_GET['id'])->find();
         
-        if ($activity['id'] == '') {
-            $this->error("该活动不存在");
+        if ($video['id'] == '') {
+            $this->error("该视频不存在");
         }
 
-        $this->assign("activity", $activity);
+        $this->assign("res", $video);
         
         $this->display();
     }
@@ -177,22 +203,20 @@ class VideoController extends CommonController {
         // var_dump($_FILES);
         // echo  "</pre>";die;
         if (IS_POST) {
-            $list = M("activity");
+            $list = M("Video");
             $data = array(
-                'title'     => $_POST['title'],
-                'author'    => $_POST['author'],
-                'content'   => $_POST['content']                    
+                'title'     => $_POST['title']                  
             );
-            foreach($data as $key => $val){
-                if(empty($val)){
-                    $this -> error("必填选项不能为空");
-                }
+            
+            if(empty($data['title'])){
+                $this -> error("必填选项不能为空");
             }
+            
 
-            if(!empty($_FILES['cover']['name']) || !empty($_FILES['attach']['name'])){
+            if(!empty($_FILES['cover']['name'])){
                 $upload = new \Think\Upload();// 实例化上传类
                 $upload->maxSize  = 3145728 ;// 设置附件上传大小
-                $upload->exts     = array('jpg', 'png', 'jpeg', 'zip', 'rar');// 设置附件上传类型
+                $upload->exts     = array('jpg', 'png', 'jpeg');// 设置附件上传类型
                 $upload->rootPath = './Public/Uploads/'; // 设置附件上传根目录
                 $upload->savePath = 'activity/'; // 设置附件上传（子）目录
                 
@@ -203,23 +227,20 @@ class VideoController extends CommonController {
 
                 if(!empty($info['cover'])) {
                     $data['cover'] = $url.'/Public/Uploads/'.$info['cover']['savepath'].$info['cover']['savename'];
-                }
-
-                if(!empty($info['attach'])) {
-                    $data['attach'] = $url.'/Public/Uploads/'.$info['attach']['savepath'].$info['attach']['savename'];
-                }             
+                }      
             }
             $data['is_online'] = $_POST['is_online'];
             $data['type']      = $_POST['type'];
-            $res = $list->where('id='.(int)$_POST['act_id'])->save($data);
+            $res = $list->where('id='.(int)$_POST['video_id'])->save($data);
         
             if($res){
-                $this -> success("活动修改成功", U('Admin/Activity/index'));
+                $this -> success("修改成功", U('Admin/Video/index'));
             }else{
-                $this -> error("活动修改失败");
+                $this -> error("修改失败");
             }
         }
     }
 
+    
 
 }
