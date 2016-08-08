@@ -4,6 +4,7 @@ use Think\Controller;
 class VideoController extends CommonController {
     
     public function index() {
+        
         if (IS_AJAX) {
             $m_act = M('video');
             $requestData= $_REQUEST;

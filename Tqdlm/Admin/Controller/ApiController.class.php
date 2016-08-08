@@ -343,7 +343,7 @@ class ApiController extends ApiComController {
  	 */
  	public function getIndexNotice(){
  		$field  = 'title, id, type, content, from_tab, crt_ts';
- 		$limit  = '0, 3';
+ 		$limit  = '0, 4';
  		$order  = 'crt_ts DESC';
 
  		$notice = M('news');
@@ -359,5 +359,7 @@ class ApiController extends ApiComController {
 		$this->setResult($result);
 		$this->output();
  	}	
+
+
 
 }

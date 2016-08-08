@@ -82,6 +82,7 @@ class NewsController extends CommonController
      */
     public function create()
     {
+        // var_dump($_POST);die;
         $data = $this->_checkParam();
 
         $id = M('news')->add($data);
